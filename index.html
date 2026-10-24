@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How Many Shawarmas?</title>
+<meta name="description" content="Turn any price into shawarmas, tacos, Uber rides and hours of minimum wage. Find out what your stuff really costs.">
+<meta property="og:title" content="How Many Shawarmas? 🌯">
+<meta property="og:description" content="A PS5 is 50 shawarmas. What about your rent?">
+<meta name="theme-color" content="#05060f">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌯</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Unbounded:wght@600;800&family=JetBrains+Mono:wght@400;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#140b24; --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.13);
+  --text:#fff8ee; --muted:#c3b3dd; --warm:#ffe7c7;
+  --hot:#ff7a1a; --hot2:#ffcf3f; --pink:#ff4fa3;
+  --grad:linear-gradient(135deg,var(--hot2),var(--hot) 50%,var(--pink));
+}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{
+  min-height:100vh;font-family:var(--font);color:var(--text);
+  background:var(--bg);overflow-x:hidden;
+}
+/* Glow lives on its own fixed layer, so scrolling doesn't repaint it */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1100px 650px at 85% -10%,#5b1d6e 0%,transparent 60%),
+    radial-gradient(900px 600px at -15% 25%,#35197a 0%,transparent 55%);
+  transform:translateZ(0);
+}
+#rain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;will-change:transform}
+
+/* ---------- game ---------- */
+.playbtn{margin-top:22px;width:100%;min-height:62px;border-radius:18px;border:2px dashed var(--hot);background:rgba(255,122,26,.1);color:var(--text);font:800 19px var(--font);cursor:pointer;animation:glow 2s ease-in-out infinite;transition:transform .12s}
+.playbtn:active{transform:scale(.97)}
+.playrow{display:flex;gap:10px;margin-top:22px}
+.playrow .playbtn{margin-top:0;flex:1;min-width:0;padding:8px 14px}
+.practice{flex:none}
+.gsq{font-size:34px;letter-spacing:4px;margin-top:12px}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(255,122,26,0)}50%{box-shadow:0 0 28px 2px rgba(255,122,26,.35)}}
+.game{position:fixed;inset:0;z-index:3;overflow-y:auto;background:radial-gradient(900px 600px at 80% -10%,#5b1d6e 0%,transparent 60%),var(--bg)}
+.gwrap{max-width:560px;margin:0 auto;padding:18px 16px 48px;text-align:center}
+.gtop{display:flex;align-items:center;gap:12px;color:var(--muted);font-weight:600}
+.gtop #gScore{margin-left:auto;color:var(--text)}
+.x{flex:none;background:var(--card);border:1px solid var(--line);color:var(--text);width:40px;height:40px;border-radius:12px;cursor:pointer;font-size:17px}
+.bar{height:8px;background:rgba(255,255,255,.08);border-radius:99px;margin:14px 0 30px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--grad);transition:width .4s}
+.ge{font-size:110px;line-height:1.1}
+.gname{font-size:clamp(30px,8vw,46px);font-weight:800;letter-spacing:-.02em;margin-top:8px;line-height:1.05}
+.gask{color:var(--muted);font-size:19px;margin:10px 0 22px}
+.gpts{font-size:96px;font-weight:800;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gverdict{font-size:28px;font-weight:800;margin-top:6px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0 12px}
+.cmp div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.cmp small{display:block;color:var(--muted);font-size:14px}
+.cmp b{font-size:24px;overflow-wrap:anywhere}
+.wide{width:100%;margin-top:18px}
+.gbest{margin-top:6px;color:var(--muted)}
+.recap{margin-top:30px;display:grid;gap:8px;text-align:left}
+.rrow{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.rrow .e{font-size:28px}
+.rrow .t{flex:1;min-width:0;font-weight:700}
+.rrow .t small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.rrow .p{font-weight:800;font-size:18px}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:48px 16px 60px}
+
+.tag{display:inline-block;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:14px;margin-bottom:18px}
+h1{font-size:clamp(44px,10vw,88px);line-height:.95;font-weight:800;letter-spacing:-.035em}
+h1 .wrap{display:inline-block;animation:wobble 2.4s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg) translateY(-4px)}}
+.lead{margin-top:14px;font-size:clamp(18px,4vw,22px);color:var(--muted);max-width:520px}
+
+.box{margin-top:28px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px}
+.lbl{display:block;font-weight:600;color:var(--muted);margin-bottom:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.money{flex:1 1 220px;display:flex;align-items:center;background:rgba(0,0,0,.28);border:2px solid var(--line);border-radius:16px;padding:0 16px;transition:border-color .2s}
+.money:focus-within{border-color:var(--hot)}
+.money span{font-size:30px;font-weight:800;color:var(--muted)}
+.money input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--text);font:800 32px var(--font);padding:13px 8px}
+.money input::placeholder{color:rgba(255,255,255,.25)}
+.go{flex:1 0 auto;max-width:100%;min-height:64px;border:0;border-radius:16px;padding:0 26px;font:800 20px var(--font);background:var(--grad);color:#1d0a00;cursor:pointer;transition:transform .12s,filter .2s}
+.go:hover{filter:brightness(1.08)}
+.go:active,.btn:active,.chip:active,.card:active{transform:scale(.96)}
+.hint{margin-top:8px;font-size:14px;color:var(--muted)}
+.chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:999px;padding:8px 14px;font:600 15px var(--font);cursor:pointer;transition:background .2s,transform .12s}
+.chip:hover{background:rgba(255,255,255,.13)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+.res{margin-top:40px;text-align:center}
+.what{font-size:clamp(19px,4.5vw,24px);color:var(--muted)}
+.big{
+  --len:3;margin-top:6px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  font-size:min(160px,calc(min(100vw - 32px,728px) * 1.5 / var(--len)));
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.pop{animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.unitname{margin-top:4px;font-size:clamp(28px,7vw,44px);font-weight:800}
+.unitname .e{display:inline-block;margin-left:6px}
+.quip{margin:14px auto 0;max-width:520px;font-size:19px;color:var(--warm)}
+.actions{margin-top:26px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.btn{padding:13px 18px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font:700 16px var(--font);cursor:pointer;transition:background .2s,transform .12s}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:var(--grad);color:#1d0a00;border:0}
+.sub{margin:46px 0 14px;font-size:20px;font-weight:600;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;text-align:left}
+.card{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;color:var(--text);cursor:pointer;font-family:inherit;text-align:left;transition:transform .15s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:var(--hot)}
+.card .e{font-size:30px}
+.card .n{font-size:26px;font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.card .u{font-size:14px;color:var(--muted)}
+
+footer{position:relative;z-index:1;text-align:center;color:var(--muted);font-size:14px;padding:0 16px 40px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;z-index:5;background:#fff8ee;color:#1d0a00;font-weight:700;padding:12px 18px;border-radius:14px;transition:.25s;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){h1 .wrap,.pop{animation:none}}
+
+/* ================= Futuristic theme (overrides the styles above) ================= */
+:root{
+  --font:'Space Grotesk',system-ui,sans-serif;
+  --display:'Unbounded','Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --bg:#05060f; --card:rgba(110,150,255,.06); --line:rgba(110,200,255,.18);
+  --text:#eaf6ff; --muted:#8ea3c7; --warm:#bdf3ff;
+  --cyan:#22e6ff; --violet:#7a5cff; --mag:#ff3df2;
+  --hot:var(--cyan); --hot2:var(--cyan); --pink:var(--mag);
+  --grad:linear-gradient(120deg,#22e6ff,#7a5cff 55%,#ff3df2);
+  --glow:0 0 0 1px rgba(34,230,255,.4),0 0 26px rgba(34,230,255,.22);
+  --panel:linear-gradient(180deg,rgba(110,150,255,.09),rgba(110,150,255,.03));
+}
+body::before,.game{
+  background:
+    radial-gradient(900px 520px at 85% -10%,rgba(122,92,255,.38),transparent 60%),
+    radial-gradient(800px 520px at -10% 30%,rgba(34,230,255,.16),transparent 60%),
+    linear-gradient(rgba(34,230,255,.055) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,rgba(34,230,255,.055) 1px,transparent 1px) 0 0/44px 44px,
+    var(--bg);
+}
+body::before{background-color:transparent}
+/* neon "floor" grid at the bottom of the screen */
+body::after{
+  content:"";position:fixed;left:-50%;right:-50%;bottom:-2px;height:42vh;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(255,61,242,.35) 2px,transparent 2px) 0 0/60px 60px,
+    linear-gradient(90deg,rgba(255,61,242,.35) 2px,transparent 2px) 0 0/60px 60px;
+  transform:perspective(320px) rotateX(62deg);transform-origin:bottom;
+  -webkit-mask-image:linear-gradient(transparent,#000 80%);mask-image:linear-gradient(transparent,#000 80%);
+  opacity:.45;
+}
+.tag{font:500 12px var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--cyan);border-color:rgba(34,230,255,.4);background:rgba(34,230,255,.06);border-radius:6px}
+.tag .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);margin-right:8px;vertical-align:1px;animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+h1{font-family:var(--display);font-size:clamp(34px,8.4vw,72px);letter-spacing:-.02em;line-height:1.02;text-shadow:0 0 34px rgba(34,230,255,.28)}
+h1 .neon{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(16px,3.8vw,20px)}
+.lbl,.gtop,.cmp small,.sub,.what,.hint,.gbest,footer,.gask{font-family:var(--mono)}
+.lbl,.gtop,.cmp small,.sub{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:500}
+.what{font-size:clamp(14px,3.6vw,17px);text-transform:uppercase;letter-spacing:.08em}
+.gask{font-size:15px}
+.hint,.gbest,footer{font-size:12.5px}
+.box,.card,.cmp div,.rrow,.btn,.x{background:var(--panel);border-color:var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.box{border-radius:16px;position:relative}
+.box::before{content:"";position:absolute;inset:-1px;border-radius:16px;pointer-events:none;
+  background:linear-gradient(var(--cyan),var(--cyan)) top left/18px 2px no-repeat,linear-gradient(var(--cyan),var(--cyan)) top left/2px 18px no-repeat,
+             linear-gradient(var(--mag),var(--mag)) bottom right/18px 2px no-repeat,linear-gradient(var(--mag),var(--mag)) bottom right/2px 18px no-repeat}
+.card,.cmp div,.rrow{border-radius:12px}
+.btn,.x{border-radius:10px}
+.money{background:rgba(0,8,28,.65);border-radius:12px;border-width:1px}
+.money:focus-within{border-color:var(--cyan);box-shadow:var(--glow)}
+.money input{font-family:var(--mono);font-weight:700;font-size:30px}
+.go,.btn.primary{background:var(--grad);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4);box-shadow:0 0 26px rgba(122,92,255,.45)}
+.go{font:600 16px var(--display);border-radius:12px;letter-spacing:.02em}
+.go:hover,.btn.primary:hover{filter:brightness(1.12)}
+.btn{font-family:var(--font)}
+.btn:hover,.chip:hover,.card:hover,.x:hover{border-color:var(--cyan);box-shadow:var(--glow);background:rgba(34,230,255,.08)}
+.chip{border-radius:8px;font:500 13px var(--mono);background:rgba(110,150,255,.06)}
+.playbtn{border:1px solid rgba(34,230,255,.55);background:linear-gradient(90deg,rgba(34,230,255,.12),rgba(122,92,255,.12));border-radius:14px;font:600 14px var(--display);letter-spacing:.02em}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(34,230,255,0)}50%{box-shadow:0 0 26px 2px rgba(34,230,255,.35)}}
+.big{font-family:var(--mono);font-weight:700;letter-spacing:-.05em;filter:drop-shadow(0 0 22px rgba(34,230,255,.35))}
+.gpts{font-family:var(--mono);font-weight:700;filter:drop-shadow(0 0 18px rgba(34,230,255,.35))}
+.unitname{font-family:var(--display);font-size:clamp(22px,5.6vw,34px);font-weight:600}
+.gname{font-family:var(--display);font-size:clamp(24px,6.4vw,38px);font-weight:600}
+.gverdict{font-family:var(--display);font-size:22px;font-weight:600}
+.card .n,.cmp b,.rrow .p{font-family:var(--mono);font-weight:700}
+.rrow .p{color:var(--cyan)}
+.bar{border-radius:2px;background:rgba(110,150,255,.12)}
+.bar i{box-shadow:0 0 14px var(--cyan)}
+.money input{font-size:24px}
+.money span{color:var(--cyan);font-size:26px}
+.sugg{margin-top:8px;display:grid;gap:6px}
+.sitem{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(0,8,28,.7);color:var(--text);font:500 16px var(--font);text-align:left;cursor:pointer}
+.sitem:hover,.sitem.top{border-color:var(--cyan);box-shadow:var(--glow)}
+.sitem .e{font-size:22px}
+.sitem .nm{flex:1;min-width:0}
+.sitem .pr{font:700 14px var(--mono);color:var(--cyan)}
+.snone{padding:10px 14px;font:13px var(--mono);color:var(--muted)}
+/* ---------- human touches ---------- */
+.ticker{position:relative;z-index:1;overflow:hidden;white-space:nowrap;border-bottom:1px solid rgba(255,61,242,.35);background:rgba(255,61,242,.08);font:500 12.5px var(--mono);color:#ffc2f6;padding:8px 0}
+.ttrack{display:inline-block;animation:tick 60s linear infinite;will-change:transform}
+.ttrack span{margin-right:42px}
+.ttrack b{color:#fff}
+@keyframes tick{to{transform:translateX(-50%)}}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.toprow .tag{margin-bottom:0}
+.stamp{flex:none;font:800 11px/1.05 var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--mag);border:2px solid var(--mag);border-radius:6px;padding:6px 9px;transform:rotate(7deg);opacity:.85;text-align:center;box-shadow:0 0 14px rgba(255,61,242,.3),inset 0 0 10px rgba(255,61,242,.2)}
+h1 .wrap{cursor:pointer;user-select:none}
+.box{margin-top:52px}
+.scribble{position:absolute;right:22px;top:-40px;display:flex;align-items:flex-start;gap:2px;background:none;border:0;padding:0;cursor:pointer;font:700 23px/1 'Caveat',cursive;color:#ffe066;transform:rotate(-3deg);text-shadow:0 0 12px rgba(255,224,102,.35)}
+.scribble svg{width:34px;height:30px;margin-top:6px}
+.scribble:hover{color:#fff}
+.box::before{z-index:0}
+footer p{margin:4px 0}
+footer .fine{opacity:.6;font-size:11px}
+@media (max-width:420px){.scribble{font-size:20px;right:12px}.stamp{font-size:9.5px}}
+.lnk{color:var(--cyan);text-decoration:none;border-bottom:1px dashed var(--cyan);white-space:nowrap}
+.money.small{flex:1 1 160px;padding:0 12px}
+.money.small input{font-size:18px;padding:10px 6px}
+.money.small span{font-size:18px}
+.snone .msg,.snone .msg2{display:block;margin-bottom:8px}
+.guess{margin-bottom:12px}
+.guess small{display:block;margin-top:4px;font:11px var(--mono);color:var(--muted)}
+.manual{display:flex;gap:8px;flex-wrap:wrap}
+.catalog{margin-top:70px}
+.cattitle{font:600 clamp(22px,5vw,30px) var(--display)}
+.cattitle span{font:500 14px var(--mono);color:var(--cyan);vertical-align:middle}
+.catctl{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
+.catlist{display:grid;gap:6px}
+.crow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);font:500 15px var(--font);text-align:left;cursor:pointer}
+.crow:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+.crow .e{font-size:22px;flex:none}
+.crow .nm{flex:1;min-width:0}
+.crow .pr{font:700 14px var(--mono);color:var(--cyan);text-align:right;flex:none}
+.crow .sh{display:block;font:400 11px var(--mono);color:var(--muted)}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.ctile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);cursor:pointer;text-align:left;font-family:var(--font);transition:transform .15s,border-color .2s,box-shadow .2s}
+.ctile:hover{transform:translateY(-3px);border-color:var(--cyan);box-shadow:var(--glow)}
+.ctile .e{font-size:32px;line-height:1}
+.ctile b{font:600 15px var(--display);margin-top:6px}
+.ctile small{font:11px var(--mono);color:var(--muted)}
+.cathead{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.cathead h3{font:600 20px var(--display)}
+.catempty{padding:14px;color:var(--muted);font:13px var(--mono)}
+@media (prefers-reduced-motion:reduce){.ttrack,.tag .dot{animation:none}}
+.toast{background:var(--cyan);color:#001018;font-family:var(--mono);border-radius:8px;box-shadow:0 0 26px rgba(34,230,255,.5)}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+
+<div class="ticker" aria-hidden="true"><div class="ttrack" id="ticker"></div></div>
+
+<main>
+  <div class="toprow">
+    <span class="tag"><span class="dot"></span>shawarma exchange · live-ish</span>
+    <span class="stamp">not financial<br>advice</span>
+  </div>
+  <h1>How many <span class="wrap" id="logoWrap" title="don't click me">🌯</span> <span class="neon">is that?</span></h1>
+  <p class="lead">Everything costs shawarmas. Rent, yachts, that PS5 you keep looking at. We just do the math.</p>
+  <div class="playrow">
+    <button id="daily" class="playbtn" type="button">🗓️ <span id="dailyLbl">Daily challenge</span></button>
+    <button id="play" class="btn practice" type="button">🎲 Practice</button>
+  </div>
+  <p class="hint" id="streakLine"></p>
+
+  <form id="f" class="box" autocomplete="off">
+    <button type="button" class="scribble" id="scribble" title="try it">
+      typos are fine, try "lambo"
+      <svg viewBox="0 0 60 50" aria-hidden="true"><path d="M8 4 C 30 6, 48 14, 44 40 M44 40 L 36 30 M44 40 L 52 31" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <label class="lbl" for="amt">Price or item name</label>
+    <div class="row">
+      <div class="money" id="moneyBox"><span>⌕</span><input id="amt" inputmode="text" placeholder="499 or iphone 17 pro" spellcheck="false"></div>
+      <button class="go" type="submit">Convert →</button>
+    </div>
+    <div class="sugg" id="sugg" hidden></div>
+    <p class="hint">Spelling doesn't matter, we don't judge. Big numbers: 50k, 1.2m, 3b. <a href="#catalog" class="lnk">See the full price list ↓</a></p>
+    <div class="chips" id="chips"></div>
+  </form>
+
+  <!-- AD SLOT: you can paste ad code here once you have traffic -->
+
+  <section id="res" class="res" hidden aria-live="polite">
+    <p class="what" id="what"></p>
+    <div class="big" id="bigN">0</div>
+    <p class="unitname" id="bigU"></p>
+    <p class="quip" id="quip"></p>
+    <div class="actions">
+      <button id="share" class="btn primary" type="button">📸 Share card</button>
+      <button id="copy" class="btn" type="button">🔗 Copy link</button>
+      <button id="rand" class="btn" type="button">🎲 Random</button>
+    </div>
+    <h2 class="sub">Or in other units (tap one)</h2>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="catalog" id="catalog">
+    <h2 class="cattitle">The price list <span id="catCount"></span></h2>
+    <p class="hint">Pick a category, or search everything. Tap any item to convert it.</p>
+    <div class="catctl">
+      <div class="money small"><span>⌕</span><input id="catQ" placeholder="search all, e.g. tesla" spellcheck="false"></div>
+      <button id="catSort" class="btn" type="button">cheapest first</button>
+    </div>
+    <div class="cats" id="cats"></div>
+    <div id="catView" hidden>
+      <div class="cathead"><button id="catBack" class="btn" type="button">← categories</button><h3 id="catName"></h3></div>
+      <div class="catlist" id="catList"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>made at 2am with way too much garlic sauce</p>
+  <p class="fine">prices are rough US prices, last checked oct 2026 · 1 shawarma = $10, don't argue · v0.4</p>
+</footer>
+<div class="toast" id="toast"></div>
+
+<div id="game" class="game" hidden role="dialog" aria-label="Shawarma quiz">
+  <div class="gwrap">
+    <div class="gtop">
+      <span id="gStep">Question 1/5</span>
+      <span id="gScore">0 pts</span>
+      <button id="gClose" class="x" type="button" aria-label="Close game">✕</button>
+    </div>
+    <div class="bar"><i id="gBar"></i></div>
+
+    <div id="gQ">
+      <div class="ge" id="gEmoji"></div>
+      <h2 class="gname" id="gName"></h2>
+      <p class="gask">How many 🌯 shawarmas does it cost?</p>
+      <form id="gForm" class="row" autocomplete="off">
+        <div class="money" id="gBox"><span>🌯</span><input id="gIn" inputmode="decimal" placeholder="your guess"></div>
+        <button class="go" type="submit">Guess!</button>
+      </form>
+    </div>
+
+    <div id="gA" hidden>
+      <div class="gpts" id="gPts"></div>
+      <p class="gverdict" id="gVerdict"></p>
+      <div class="cmp">
+        <div><small>Your guess</small><b id="gYou"></b></div>
+        <div><small>Real answer</small><b id="gReal"></b></div>
+      </div>
+      <p class="hint" id="gPrice"></p>
+      <button id="gNext" class="go wide" type="button">Next →</button>
+    </div>
+
+    <div id="gEnd" hidden>
+      <p class="what">Your score</p>
+      <div class="big" id="gFinal" style="--len:8.5">0/500</div>
+      <p class="unitname" id="gRank"></p>
+      <p class="quip" id="gRankQ"></p>
+      <div class="gsq" id="gGrid"></div>
+      <p class="gbest" id="gBest"></p>
+      <p class="gbest" id="gNextDaily"></p>
+      <div class="actions">
+        <button id="gShare" class="btn primary" type="button">📸 Share score</button>
+        <button id="gCopy" class="btn" type="button">🔗 Challenge a friend</button>
+        <button id="gAgain" class="btn" type="button">🔁 Play again</button>
+      </div>
+      <div class="recap" id="gRecap"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- number helpers ---------- */
+const nf = (d) => new Intl.NumberFormat('en-US', { maximumFractionDigits: d });
+const compact = new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'long', maximumFractionDigits: 1 });
+function fmt(n) {
+  if (!isFinite(n)) return '∞';
+  if (n >= 1e9) return compact.format(n);
+  if (n >= 100) return nf(0).format(n);
+  if (n >= 10) return nf(1).format(n);
+  return nf(2).format(n);
+}
+const short = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+const fmtShort = n => (n >= 1e6 ? short.format(n) : fmt(n));
+function money(n) {
+  if (n >= 1e9) return compact.format(n);
+  return Number.isInteger(n) ? nf(0).format(n) : new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+}
+function dur(days) {
+  if (days < 1) return fmt(days * 24) + ' hours';
+  if (days < 60) return fmt(days) + ' days';
+  if (days < 730) return fmt(days / 30.4) + ' months';
+  const y = days / 365;
+  return fmt(y) + ' years';
+}
+function parseAmount(s) {
+  s = String(s).trim().toLowerCase().replace(/[$,\s]/g, '');
+  const m = s.match(/^(\d*\.?\d+)([kmbt])?$/);
+  if (!m) return NaN;
+  const mult = { k: 1e3, m: 1e6, b: 1e9, t: 1e12 }[m[2]] || 1;
+  return parseFloat(m[1]) * mult;
+}
+
+/* ---------- units ---------- */
+const UNITS = [
+  { id: 'shawarma', e: '🌯', one: 'shawarma', many: 'shawarmas', p: 10,
+    q: n => `Eating 3 a day, that's ${dur(n / 3)} of pure shawarma.` + (n / 3 > 365 * 120 ? ' Better start now.' : '') },
+  { id: 'taco', e: '🌮', one: 'taco', many: 'tacos', p: 3,
+    q: n => `Taco Tuesday (3 each) every week for ${dur(n / 3 * 7)}.` },
+  { id: 'burger', e: '🍔', one: 'burger', many: 'burgers', p: 6,
+    q: n => { const ft = n * 0.25; return `Stacked up, that's ${fmt(ft)} ft of burger` + (ft > 1083 ? ', taller than the Eiffel Tower.' : '.'); } },
+  { id: 'pizza', e: '🍕', one: 'pizza slice', many: 'pizza slices', p: 4,
+    q: n => `That's ${fmt(n / 8)} whole pizzas. No sharing.` },
+  { id: 'coffee', e: '☕', one: 'latte', many: 'lattes', p: 6,
+    q: n => `A latte every morning for ${dur(n)}.` },
+  { id: 'energy', e: '⚡', one: 'energy drink', many: 'energy drinks', p: 3,
+    q: n => `${fmt(n * 160)} mg of caffeine. Your heart has left the chat.` },
+  { id: 'boba', e: '🧋', one: 'boba tea', many: 'boba teas', p: 7,
+    q: n => `That's ${fmt(n * 0.5)} liters of boba. Bring a bigger straw.` },
+  { id: 'avo', e: '🥑', one: 'avocado toast', many: 'avocado toasts', p: 14,
+    q: () => `And this is why you can't afford a house.` },
+  { id: 'uber', e: '🚕', one: 'Uber ride', many: 'Uber rides', p: 25,
+    q: n => `${fmt(n)} rides home at 2am that you don't remember.` },
+  { id: 'netflix', e: '📺', one: 'month of Netflix', many: 'months of Netflix', p: 18,
+    q: n => `That's ${dur(n * 30.4)} of "just one more episode".` },
+  { id: 'wage', e: '⏱️', one: 'hour of minimum wage', many: 'hours of minimum wage', p: 7.25,
+    q: n => n / 40 < 104 ? `That's ${fmt(n / 40)} full work weeks at $7.25/h.` : `That's ${fmt(n / 2080)} years of full-time work at $7.25/h.` },
+];
+const PRESETS = [
+  { e: '🎮', c: 'PS5', w: 'A PS5', p: 550 },
+  { e: '📱', c: 'iPhone 17 Pro', w: 'An iPhone 17 Pro', p: 1099 },
+  { e: '👟', c: 'Air Jordans', w: 'Air Jordans', p: 200 },
+  { e: '🎟️', c: 'Concert ticket', w: 'A concert ticket', p: 250 },
+  { e: '🚗', c: 'Tesla', w: 'A Tesla Model 3', p: 42000 },
+  { e: '🎓', c: 'College degree', w: 'A college degree', p: 120000 },
+  { e: '🏠', c: 'US house', w: 'An average US house', p: 420000 },
+  { e: '🏎️', c: 'Bugatti', w: 'A Bugatti', p: 3000000 },
+  { e: '🛥️', c: 'Superyacht', w: 'A superyacht', p: 500000000 },
+];
+
+/* ---------- state ---------- */
+const state = { amount: 0, label: '', unit: 'shawarma' };
+const unitOf = id => UNITS.find(u => u.id === id) || UNITS[0];
+const nameFor = (u, n) => (Math.abs(n - 1) < 1e-9 ? u.one : u.many);
+const whatText = () => (state.label ? `${state.label} ($${money(state.amount)}) is` : `$${money(state.amount)} is`);
+
+/* ---------- chips ---------- */
+PRESETS.forEach(pr => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip';
+  b.textContent = `${pr.e} ${pr.c}`;
+  b.onclick = () => { $('amt').value = pr.p; go(pr.p, pr.w, 'shawarma'); };
+  $('chips').appendChild(b);
+});
+
+/* ---------- smart search (understands typos) ---------- */
+// Extra words people might type for each item.
+const ALIASES = {
+  'iPhone 17 Pro (new)': 'apple phone', 'iPhone 17 Pro Max (new)': 'apple phone promax', 'iPhone 17 (new)': 'apple phone',
+  'iPhone 14 (used)': 'apple phone old', 'iPhone 13 (used)': 'apple phone old',
+  'AirPods Pro 3': 'apple earbuds headphones airpod', 'AirPods 4': 'apple earbuds headphones airpod',
+  'Apple Watch Ultra 3': 'smartwatch', 'MacBook Air M4 (13")': 'apple laptop mac', 'iPad (11th gen)': 'apple tablet',
+  'Apple Vision Pro': 'vr headset glasses', 'Meta Quest 3': 'vr headset oculus', 'A high-end gaming PC': 'computer rtx',
+  'PS5 (disc edition)': 'playstation sony console', 'PS5 Pro': 'playstation sony console', 'Nintendo Switch 2': 'console',
+  'Xbox Series X': 'microsoft console', 'Steam Deck OLED (512GB)': 'valve handheld', '10,000 Robux': 'roblox',
+  '1,000 Fortnite V-Bucks': 'vbucks', 'Minecraft (Java + Bedrock)': 'game', 'A brand-new console game': 'videogame gta',
+  'Air Jordan 1 High': 'nike sneakers shoes jordans', 'Rolex Submariner (new)': 'watch luxury', 'Louis Vuitton Neverfull bag': 'lv purse handbag',
+  'A New Era fitted cap': 'hat', 'Stanley Quencher 40oz': 'cup tumbler bottle', 'Dyson Airwrap': 'hair styler',
+  'A complete skateboard': 'skate', 'An electric scooter': 'escooter', 'A Big Mac': 'mcdonalds burger',
+  'A Starbucks latte (grande)': 'coffee', 'A movie ticket': 'cinema film', 'A Disney World 1-day ticket': 'disneyland park',
+  'A hot dog at a baseball game': 'hotdog', 'A dozen eggs': 'egg', 'A full tank of gas': 'petrol fuel car',
+  '1 year of Netflix (Standard)': 'subscription', '1 year of Spotify Premium': 'music subscription', 'A Super Bowl ticket': 'football nfl',
+  'A golden retriever puppy': 'dog', 'A hamster': 'pet', 'A horse': 'pony', 'An average engagement ring': 'diamond',
+  'An average US wedding': 'marriage', 'A 4-year college degree': 'university', '1 year at Harvard (all-in)': 'tuition university',
+  'An average US house': 'home', 'A backyard swimming pool': 'pool', 'A Steinway grand piano': 'instrument',
+  'Tesla Model 3': 'car electric', 'An average new car': 'vehicle', 'Lamborghini Urus': 'lambo car', 'Ferrari SF90': 'car supercar',
+  'Bugatti Chiron': 'car hypercar', 'A helicopter': 'heli chopper', 'A ticket to space': 'rocket spacex astronaut',
+  'A private jet': 'plane gulfstream', 'A Boeing 747': 'plane airplane', 'A superyacht': 'yacht boat', 'An NBA team': 'basketball',
+};
+// More items for search + the catalog (not used in the game). [emoji, name, rough US price, extra search words]
+const EXTRA_ITEMS = [
+  ['🌯', 'A shawarma', 10, 'wrap doner kebab gyro'],
+  ['🎟️', 'A concert ticket', 250, 'show gig'],
+  // phones
+  ['📱', 'iPhone 11 (used)', 150, 'apple phone'], ['📱', 'iPhone 12 (used)', 200, 'apple phone'],
+  ['📱', 'iPhone 15 (used)', 400, 'apple phone'], ['📱', 'iPhone 15 Pro (used)', 550, 'apple phone'],
+  ['📱', 'iPhone 16 (new)', 699, 'apple phone'], ['📱', 'iPhone 16e (new)', 599, 'apple phone'],
+  ['📱', 'iPhone 16 Pro (used)', 700, 'apple phone'], ['📱', 'iPhone Air (new)', 999, 'apple phone thin'],
+  // every iPhone ever (used prices, roughly)
+  ['📱', 'Original iPhone (2007, used)', 300, 'apple phone first 2g'], ['📦', 'Sealed original iPhone (collector)', 60000, 'apple phone first 2007 unopened'],
+  ['📱', 'iPhone 3G (used)', 50, 'apple phone'], ['📱', 'iPhone 3GS (used)', 50, 'apple phone'],
+  ['📱', 'iPhone 4 (used)', 40, 'apple phone'], ['📱', 'iPhone 4S (used)', 40, 'apple phone'],
+  ['📱', 'iPhone 5 (used)', 50, 'apple phone'], ['📱', 'iPhone 5c (used)', 50, 'apple phone'], ['📱', 'iPhone 5s (used)', 50, 'apple phone'],
+  ['📱', 'iPhone 6 (used)', 60, 'apple phone'], ['📱', 'iPhone 6 Plus (used)', 70, 'apple phone'],
+  ['📱', 'iPhone 6s (used)', 70, 'apple phone'], ['📱', 'iPhone 6s Plus (used)', 80, 'apple phone'],
+  ['📱', 'iPhone SE 1st gen (used)', 60, 'apple phone se 2016'], ['📱', 'iPhone 7 (used)', 70, 'apple phone'], ['📱', 'iPhone 7 Plus (used)', 90, 'apple phone'],
+  ['📱', 'iPhone 8 (used)', 90, 'apple phone'], ['📱', 'iPhone 8 Plus (used)', 110, 'apple phone'],
+  ['📱', 'iPhone X (used)', 120, 'apple phone 10 ten'], ['📱', 'iPhone XR (used)', 130, 'apple phone'],
+  ['📱', 'iPhone XS (used)', 140, 'apple phone'], ['📱', 'iPhone XS Max (used)', 160, 'apple phone'],
+  ['📱', 'iPhone 11 Pro (used)', 200, 'apple phone'], ['📱', 'iPhone 11 Pro Max (used)', 230, 'apple phone'],
+  ['📱', 'iPhone SE 2nd gen (used)', 90, 'apple phone se 2020'], ['📱', 'iPhone 12 mini (used)', 160, 'apple phone'],
+  ['📱', 'iPhone 12 Pro (used)', 270, 'apple phone'], ['📱', 'iPhone 12 Pro Max (used)', 320, 'apple phone'],
+  ['📱', 'iPhone 13 mini (used)', 220, 'apple phone'], ['📱', 'iPhone 13 Pro (used)', 350, 'apple phone'], ['📱', 'iPhone 13 Pro Max (used)', 400, 'apple phone'],
+  ['📱', 'iPhone SE 3rd gen (used)', 150, 'apple phone se 2022'],
+  ['📱', 'iPhone 14 Plus (used)', 330, 'apple phone'], ['📱', 'iPhone 14 Pro (used)', 450, 'apple phone'], ['📱', 'iPhone 14 Pro Max (used)', 520, 'apple phone'],
+  ['📱', 'iPhone 15 Plus (used)', 450, 'apple phone'], ['📱', 'iPhone 15 Pro Max (used)', 650, 'apple phone'],
+  ['📱', 'iPhone 16 Plus (new)', 799, 'apple phone'], ['📱', 'iPhone 16 Pro Max (used)', 850, 'apple phone'],
+  // sneakers (retail, or resale for hyped pairs)
+  ['👟', 'Air Jordan 1 Low', 115, 'nike sneakers shoes jordans aj1'], ['👟', 'Air Jordan 1 "Chicago" Lost & Found', 300, 'nike sneakers shoes jordans aj1'],
+  ['👟', 'Travis Scott x Jordan 1 Low "Mocha"', 1000, 'nike sneakers shoes jordans cactus jack'], ['👟', 'Off-White x Air Jordan 1', 2000, 'nike sneakers shoes jordans virgil'],
+  ['👟', 'Air Jordan 3 "White Cement"', 210, 'nike sneakers shoes jordans aj3'], ['👟', 'Air Jordan 4 "Black Cat"', 350, 'nike sneakers shoes jordans aj4'],
+  ['👟', 'Air Jordan 4 "Military Black"', 250, 'nike sneakers shoes jordans aj4'], ['👟', 'Air Jordan 5', 200, 'nike sneakers shoes jordans aj5'],
+  ['👟', 'Air Jordan 6 "Infrared"', 220, 'nike sneakers shoes jordans aj6'], ['👟', 'Air Jordan 11 "Concord"', 230, 'nike sneakers shoes jordans aj11'],
+  ['👟', 'Air Jordan 11 "Bred"', 230, 'nike sneakers shoes jordans aj11'], ['👟', 'Air Jordan 12', 210, 'nike sneakers shoes jordans aj12'],
+  ['👟', 'Air Jordan 13', 200, 'nike sneakers shoes jordans aj13'], ['👟', 'Nike Dunk Low "Panda"', 115, 'sneakers shoes dunks'],
+  ['👟', 'Nike SB Dunk Low', 125, 'sneakers shoes dunks skate'], ['👟', 'Nike Air Max 90', 140, 'sneakers shoes airmax'],
+  ['👟', 'Nike Air Max 97', 185, 'sneakers shoes airmax'], ['👟', 'Nike Air Max 1', 150, 'sneakers shoes airmax'],
+  ['👟', 'Nike Air Max Plus (TN)', 185, 'sneakers shoes airmax tns'], ['👟', 'Nike Blazer Mid', 105, 'sneakers shoes'],
+  ['👟', 'Nike Vomero 5', 165, 'sneakers shoes'], ['👟', 'Nike Cortez', 90, 'sneakers shoes'],
+  ['👟', 'Nike Pegasus', 140, 'sneakers shoes running'], ['👟', 'Nike Kobe 6 Protro', 250, 'sneakers shoes basketball'],
+  ['👟', 'Nike LeBron 22', 200, 'sneakers shoes basketball'], ['👟', 'Nike Mag (Back to the Future)', 40000, 'sneakers shoes self lacing marty'],
+  ['👟', 'Adidas Samba', 100, 'sneakers shoes'], ['👟', 'Adidas Gazelle', 100, 'sneakers shoes'],
+  ['👟', 'Adidas Campus 00s', 110, 'sneakers shoes'], ['👟', 'Adidas Superstar', 100, 'sneakers shoes'],
+  ['👟', 'Adidas Ultraboost', 190, 'sneakers shoes running'], ['👟', 'Yeezy Boost 350 V2', 250, 'adidas sneakers shoes kanye'],
+  ['🩴', 'Yeezy Slide', 100, 'adidas slides kanye'], ['👟', 'New Balance 550', 120, 'sneakers shoes nb'],
+  ['👟', 'New Balance 990v6', 200, 'sneakers shoes nb'], ['👟', 'New Balance 9060', 150, 'sneakers shoes nb'],
+  ['👟', 'New Balance 574', 90, 'sneakers shoes nb'], ['👟', 'Converse Chuck Taylor', 65, 'sneakers shoes chucks'],
+  ['👟', 'Converse Chuck 70', 90, 'sneakers shoes chucks'], ['👟', 'Vans Old Skool', 70, 'sneakers shoes'],
+  ['👟', 'Asics Gel-Kayano 14', 150, 'sneakers shoes'], ['👟', 'Asics Gel-1130', 110, 'sneakers shoes'],
+  ['👟', 'Puma Suede', 75, 'sneakers shoes'], ['👟', 'On Cloud 5', 150, 'sneakers shoes running'],
+  ['👟', 'Hoka Clifton', 145, 'sneakers shoes running'], ['👟', 'Salomon XT-6', 200, 'sneakers shoes'],
+  ['👟', 'Gucci Ace sneakers', 800, 'designer shoes'], ['👟', 'Golden Goose sneakers', 600, 'designer shoes'],
+  ['👟', 'Louis Vuitton Trainer', 1300, 'designer sneakers shoes lv'], ['🥾', 'UGG Tasman', 120, 'slippers shoes uggs'],
+  ['🥾', 'Timberland 6-inch boots', 200, 'boots shoes timbs'], ['🥾', 'Dr. Martens 1460', 170, 'boots shoes docs'],
+  ['📱', 'Samsung Galaxy S25 Ultra', 1299, 'android phone'], ['📱', 'Samsung Galaxy S25', 799, 'android phone'],
+  ['📱', 'Samsung Galaxy Z Flip7', 1099, 'android phone foldable'], ['📱', 'Samsung Galaxy Z Fold7', 1999, 'android phone foldable'],
+  ['📱', 'Google Pixel 10', 799, 'android phone'], ['📱', 'Google Pixel 10 Pro', 999, 'android phone'],
+  // tech
+  ['📲', 'iPad Pro 13"', 1299, 'apple tablet'], ['📲', 'iPad Air', 599, 'apple tablet'],
+  ['💻', 'MacBook Pro 14"', 1599, 'apple laptop mac'], ['🖥️', 'Mac mini', 599, 'apple computer'],
+  ['💻', 'A Chromebook', 300, 'laptop school'], ['🎧', 'AirPods Max', 549, 'apple headphones'],
+  ['🎧', 'AirPods Pro 2 (used)', 120, 'apple earbuds airpod'], ['🎧', 'Beats Studio Pro', 349, 'headphones'],
+  ['🎧', 'Sony WH-1000XM6', 449, 'headphones noise cancelling'], ['🎧', 'Samsung Galaxy Buds3 Pro', 249, 'earbuds'],
+  ['🔊', 'JBL Flip speaker', 130, 'bluetooth speaker'], ['⌚', 'Apple Watch Series 11', 399, 'smartwatch'],
+  ['⌚', 'Apple Watch SE', 249, 'smartwatch'], ['⌚', 'Casio G-Shock', 100, 'watch'],
+  ['📷', 'GoPro HERO', 400, 'camera action'], ['🛸', 'DJI Mini drone', 600, 'drone'],
+  ['📖', 'Kindle Paperwhite', 160, 'ebook reader amazon'], ['📺', '65" smart TV', 600, 'television tv'],
+  ['🧹', 'A Roomba', 300, 'robot vacuum'], ['🔔', 'Ring video doorbell', 100, 'camera'],
+  // gaming
+  ['🎮', 'PS5 Digital Edition', 500, 'playstation sony console'], ['🎮', 'PlayStation Portal', 200, 'sony handheld'],
+  ['🎮', 'DualSense controller', 75, 'ps5 controller gamepad'], ['🎮', 'Xbox Series S', 400, 'microsoft console'],
+  ['🕹️', 'Nintendo Switch OLED', 349, 'console'], ['🕹️', 'Nintendo Switch Lite', 229, 'console handheld'],
+  ['🏁', 'Mario Kart World', 80, 'nintendo game switch'], ['🥽', 'Meta Quest 3S', 299, 'vr headset oculus'],
+  ['🧩', 'RTX 5090 graphics card', 2000, 'nvidia gpu video card'], ['🧩', 'RTX 5070 graphics card', 550, 'nvidia gpu video card'],
+  ['🪑', 'A gaming chair', 300, 'chair'], ['🖥️', 'A gaming monitor', 400, 'screen display'],
+  ['🃏', 'A rare 1st-edition Charizard card', 300000, 'pokemon card'], ['🧸', 'A Labubu', 30, 'pop mart toy'],
+  ['🎮', '1 year of Xbox Game Pass Ultimate', 360, 'subscription'], ['🎮', '1 year of PlayStation Plus', 80, 'ps plus subscription'],
+  // clothes & stuff
+  ['👟', 'Nike Air Force 1', 115, 'sneakers shoes af1'], ['🐊', 'Crocs', 50, 'shoes clogs'],
+  ['🧥', 'Supreme box logo hoodie', 500, 'hoodie streetwear'], ['🧥', 'The North Face Nuptse jacket', 330, 'puffer jacket'],
+  ['🧥', 'Canada Goose parka', 1300, 'jacket coat'], ['👟', 'Balenciaga Triple S', 1100, 'sneakers shoes'],
+  ['👔', 'Gucci belt', 500, 'designer'], ['🕶️', 'Ray-Ban sunglasses', 170, 'glasses shades'],
+  ['👖', "Levi's jeans", 70, 'pants denim'], ['⌚', 'Patek Philippe Nautilus', 120000, 'watch luxury'],
+  ['⌚', 'Audemars Piguet Royal Oak', 60000, 'watch luxury ap'],
+  // cars & rides
+  ['🚗', 'Toyota Corolla', 23000, 'car'], ['🚗', 'Honda Civic', 26000, 'car'], ['🛻', 'Ford F-150', 40000, 'truck pickup'],
+  ['🐎', 'Ford Mustang', 32000, 'car muscle'], ['🚙', 'Tesla Model Y', 45000, 'car electric'],
+  ['🛻', 'Tesla Cybertruck', 80000, 'truck electric'], ['🚗', 'BMW M3', 77000, 'car'],
+  ['🚙', 'Mercedes G-Wagon', 150000, 'g class car suv'], ['🏎️', 'Porsche 911', 130000, 'car'],
+  ['🏎️', 'McLaren 750S', 330000, 'car supercar'], ['🏎️', 'Lamborghini Revuelto', 600000, 'lambo car'],
+  ['🚘', 'Rolls-Royce Cullinan', 400000, 'rolls car suv'], ['🏎️', 'Koenigsegg Jesko', 3000000, 'car hypercar'],
+  ['🏍️', 'A Harley-Davidson', 20000, 'motorcycle bike'], ['🚲', 'An e-bike', 1500, 'electric bike bicycle'],
+  ['⛳', 'A golf cart', 10000, 'cart'], ['🌊', 'A jet ski', 10000, 'waverunner'],
+  // food
+  ['🍟', "A McDonald's Happy Meal", 6, 'mcdonalds kids meal'], ['🌯', 'A Chipotle burrito', 11, 'burrito'],
+  ['🍕', 'A large pizza', 18, 'dominos pizza'], ['🥖', 'A Subway footlong', 10, 'sandwich sub'],
+  ['🥫', 'A Red Bull', 3.5, 'energy drink'], ['🥫', 'A Monster Energy', 3.5, 'energy drink'],
+  ['🥤', 'A Coca-Cola', 2, 'coke soda'], ['🍣', 'A sushi dinner', 60, 'japanese food'],
+  ['🍗', 'A KFC bucket', 30, 'chicken'], ['🍩', 'A dozen Krispy Kreme donuts', 18, 'doughnuts'],
+  ['🌶️', 'A bag of Takis', 5, 'chips snack'], ['🥛', 'A gallon of milk', 4, 'milk'],
+  ['🥩', 'A wagyu steak', 150, 'beef meat'], ['🍬', 'A pack of gum', 2, 'chewing gum'],
+  // life
+  ['🏠', '1 month of rent (US average)', 1700, 'apartment rent'], ['🌆', '1 month in a NYC studio', 3500, 'rent apartment new york'],
+  ['✈️', 'A plane ticket NYC → LA', 350, 'flight'], ['🗼', 'A week in Paris', 3000, 'trip vacation travel france'],
+  ['🚢', 'A week-long cruise', 1500, 'ship vacation'], ['🏋️', '1 year of gym membership', 600, 'gym fitness'],
+  ['😬', 'Braces', 6000, 'teeth dentist orthodontist'], ['💉', 'A small tattoo', 150, 'tattoo'],
+  ['💇', 'A haircut', 35, 'barber'], ['☁️', '1 year of iCloud 2TB', 120, 'storage apple'],
+  ['▶️', '1 year of YouTube Premium', 168, 'subscription'],
+  // pets
+  ['🐱', 'Adopting a cat', 150, 'kitten pet'], ['🐶', 'A French bulldog puppy', 4000, 'dog frenchie pet'],
+  ['🦜', 'A parrot', 1500, 'bird pet'], ['🐠', 'A goldfish', 5, 'fish pet'],
+  // absurd
+  ['🏝️', 'A small private island', 5000000, 'island'], ['🏰', 'A Beverly Hills mansion', 30000000, 'house la'],
+  ['🏙️', 'A NYC penthouse', 50000000, 'apartment new york'], ['📺', 'A 30-second Super Bowl ad', 8000000, 'commercial tv'],
+  ['🛩️', 'An F-35 fighter jet', 80000000, 'military plane'], ['⚓', 'An aircraft carrier', 13000000000, 'navy ship'],
+  ['🏗️', 'Building the Burj Khalifa', 1500000000, 'skyscraper dubai'], ['🔭', 'The James Webb Space Telescope', 10000000000, 'nasa'],
+  ['🛰️', 'The International Space Station', 150000000000, 'iss nasa'], ['🐦', 'Twitter (what Elon paid)', 44000000000, 'x musk'],
+  ['📸', 'Instagram (what Facebook paid)', 1000000000, 'meta'], ['⛏️', 'Minecraft (what Microsoft paid)', 2500000000, 'mojang'],
+].map(([e, n, p, a]) => ({ e, n, p, a }));
+// Even more items, already sorted into categories. [emoji, name, rough price in USD, extra search words]
+const MORE = {
+  'Cars': [
+    ['🚗', 'Toyota Camry', 29000, 'car'], ['🚙', 'Toyota RAV4', 31000, 'car suv'], ['🚗', 'Toyota Prius', 29000, 'car hybrid'],
+    ['🛻', 'Toyota Tacoma', 33000, 'truck pickup'], ['🛻', 'Toyota Tundra', 41000, 'truck pickup'], ['🚙', 'Toyota 4Runner', 42000, 'car suv'],
+    ['🚙', 'Toyota Land Cruiser', 57000, 'car suv'], ['🏎️', 'Toyota GR Supra', 47000, 'car sports'], ['🚗', 'Toyota AE86 (used)', 30000, 'car initial d trueno'],
+    ['🚗', 'Honda Accord', 29000, 'car'], ['🚙', 'Honda CR-V', 31000, 'car suv'], ['🚙', 'Ford Bronco', 40000, 'car suv'],
+    ['🚙', 'Ford Explorer', 40000, 'car suv'], ['🛻', 'Ford F-150 Raptor', 80000, 'truck pickup'], ['🏎️', 'Chevrolet Corvette', 70000, 'car vette sports'],
+    ['🛻', 'Chevrolet Silverado', 38000, 'truck pickup chevy'], ['🚙', 'Chevrolet Tahoe', 60000, 'car suv chevy'], ['🏎️', 'Chevrolet Camaro (used)', 30000, 'car chevy muscle'],
+    ['🏎️', 'Dodge Challenger Hellcat (used)', 60000, 'car muscle'], ['🚙', 'Jeep Wrangler', 33000, 'car suv'], ['🚙', 'Jeep Grand Cherokee', 38000, 'car suv'],
+    ['🏎️', 'Nissan GT-R', 120000, 'car godzilla'], ['🏎️', 'Nissan Skyline R34 GT-R', 200000, 'car jdm fast furious'], ['🚗', 'Nissan Altima', 27000, 'car'],
+    ['🚗', 'Subaru WRX', 33000, 'car rally'], ['🚙', 'Subaru Outback', 30000, 'car wagon'], ['🏎️', 'Mazda MX-5 Miata', 30000, 'car convertible'],
+    ['🚙', 'Kia Telluride', 37000, 'car suv'], ['🚗', 'Hyundai Elantra', 23000, 'car'], ['🚗', 'Volkswagen Golf GTI', 33000, 'car vw'],
+    ['🐞', 'Volkswagen Beetle (used)', 8000, 'car vw bug'], ['🚗', 'Mini Cooper', 30000, 'car'], ['🚙', 'BMW X5', 67000, 'car suv'],
+    ['🏎️', 'BMW M5', 120000, 'car'], ['🚘', 'Mercedes S-Class', 120000, 'car benz luxury'], ['🏎️', 'Mercedes-AMG GT', 140000, 'car benz'],
+    ['🚗', 'Audi A4', 45000, 'car'], ['🏎️', 'Audi R8 (used)', 150000, 'car'], ['🚗', 'Porsche Taycan', 100000, 'car electric'],
+    ['🚙', 'Porsche Cayenne', 85000, 'car suv'], ['🏎️', 'Porsche 911 GT3 RS', 245000, 'car'], ['🏎️', 'Lamborghini Huracán', 250000, 'lambo car'],
+    ['🏎️', 'Lamborghini Aventador (used)', 400000, 'lambo car'], ['🏎️', 'Ferrari Roma', 250000, 'car'], ['🏎️', 'Ferrari 296 GTB', 330000, 'car'],
+    ['🏎️', 'LaFerrari', 4000000, 'car hypercar'], ['🏎️', 'McLaren P1 (used)', 1500000, 'car hypercar'], ['🏎️', 'McLaren Senna', 1200000, 'car hypercar'],
+    ['🏎️', 'Bugatti Veyron (used)', 1500000, 'car hypercar'], ['🏎️', 'Bugatti Tourbillon', 4000000, 'car hypercar'], ['🏎️', 'Pagani Huayra', 3000000, 'car hypercar'],
+    ['🚘', 'Rolls-Royce Phantom', 500000, 'rolls car luxury'], ['🚘', 'Bentley Continental GT', 250000, 'car luxury'], ['🏎️', 'Aston Martin DB12', 250000, 'car bond'],
+    ['🏎️', 'Maserati MC20', 250000, 'car'], ['🚗', 'Lucid Air', 72000, 'car electric'], ['🛻', 'Rivian R1T', 70000, 'truck electric'],
+    ['🚗', 'Tesla Model S', 85000, 'car electric'], ['🚙', 'Tesla Model X', 90000, 'car electric suv'], ['🛻', 'GMC Hummer EV', 98000, 'truck electric'],
+    ['🚙', 'Cadillac Escalade', 90000, 'car suv luxury'], ['🚙', 'Lincoln Navigator', 100000, 'car suv luxury'], ['🏎️', 'Mitsubishi Lancer Evo (used)', 35000, 'car rally'],
+    ['🚗', 'DeLorean DMC-12 (used)', 60000, 'car back to the future'], ['🚙', 'Range Rover', 110000, 'car suv luxury'], ['🚗', 'A used Honda Civic', 15000, 'car old'],
+  ],
+  'Big rides': [
+    ['🚌', 'A school bus', 100000, 'bus yellow'], ['🚌', 'A city bus', 500000, 'bus transit'], ['🚒', 'A fire truck', 750000, 'firetruck fire engine'],
+    ['🚑', 'An ambulance', 300000, 'emergency'], ['🚛', 'A semi truck', 180000, 'truck big rig 18 wheeler'], ['🏎️', 'A Formula 1 car (to build)', 15000000, 'f1 race car'],
+    ['🏁', 'A NASCAR race car', 350000, 'race car'], ['🛻', 'A monster truck', 250000, 'truck'], ['🚂', 'A locomotive', 3000000, 'train'],
+    ['🚄', 'A bullet train', 50000000, 'shinkansen high speed train'], ['🚜', 'A tractor', 100000, 'farm'], ['🏗️', 'A tower crane', 500000, 'construction'],
+    ['🛥️', 'A speedboat', 80000, 'boat'], ['⛵', 'A sailboat', 150000, 'boat yacht'], ['🛳️', 'A cruise ship', 1000000000, 'ship boat'],
+  ],
+  'Homes': [
+    ['🌳', 'A treehouse', 20000, 'house tree'], ['🏡', 'A tiny house', 60000, 'house small'], ['🏘️', 'A mobile home', 80000, 'house trailer'],
+    ['🪵', 'A log cabin', 300000, 'house cabin wood'], ['🏠', 'A starter home in Ohio', 180000, 'house cheap'], ['🏰', 'A castle in Scotland', 2000000, 'castle'],
+    ['🏢', 'An apartment in Dubai', 500000, 'flat'], ['🏯', 'A studio in Tokyo', 250000, 'apartment flat japan'], ['🏛️', 'The White House (est. value)', 400000000, 'president'],
+    ['👑', 'Buckingham Palace (est. value)', 5000000000, 'king palace london'], ['🎸', 'Neverland Ranch (2020 sale)', 22000000, 'michael jackson'],
+    ['🏙️', 'Antilia, the Mumbai mega-home (est.)', 2000000000, 'ambani house india'], ['🏝️', 'A whole private island in the Bahamas', 20000000, 'island'],
+  ],
+  'Cities': [
+    ['🗽', 'Average home in New York', 800000, 'nyc city'], ['🌴', 'Average home in Los Angeles', 950000, 'la city'],
+    ['🌉', 'Average home in San Francisco', 1300000, 'sf city'], ['🌊', 'Average home in Miami', 600000, 'city florida'],
+    ['🌬️', 'Average home in Chicago', 330000, 'city'], ['🤠', 'Average home in Houston', 330000, 'city texas'],
+    ['🤠', 'Average home in Dallas', 400000, 'city texas'], ['🎸', 'Average home in Austin', 550000, 'city texas'],
+    ['☕', 'Average home in Seattle', 850000, 'city'], ['🎰', 'Average home in Las Vegas', 450000, 'city vegas'],
+    ['🏔️', 'Average home in Denver', 600000, 'city'], ['🦞', 'Average home in Boston', 800000, 'city'],
+    ['🍑', 'Average home in Atlanta', 400000, 'city'], ['🌵', 'Average home in Phoenix', 450000, 'city arizona'],
+    ['🚗', 'Average home in Detroit', 90000, 'city michigan'], ['🌺', 'Average home in Honolulu', 850000, 'city hawaii'],
+    ['💂', 'Average home in London', 700000, 'city uk england'], ['🗼', 'Average home in Paris', 500000, 'city france apartment'],
+    ['🗾', 'Average home in Tokyo', 600000, 'city japan'], ['🏙️', 'Average home in Dubai', 1000000, 'city uae'],
+    ['🍁', 'Average home in Toronto', 800000, 'city canada'], ['🦘', 'Average home in Sydney', 1100000, 'city australia'],
+    ['🦁', 'Average home in Singapore', 1200000, 'city'], ['🏮', 'Average home in Hong Kong', 1100000, 'city china'],
+    ['🥨', 'Average home in Berlin', 450000, 'city germany'], ['🍕', 'Average home in Rome', 400000, 'city italy'],
+    ['💃', 'Average home in Madrid', 400000, 'city spain'], ['🇷🇺', 'Average home in Moscow', 300000, 'city russia'],
+    ['🎭', 'Average home in Mexico City', 200000, 'city mexico'], ['⚽', 'Average home in Rio de Janeiro', 150000, 'city brazil'],
+  ],
+  'US states': [
+    ['🌴', 'Average home in California', 760000, 'state ca'], ['🌺', 'Average home in Hawaii', 830000, 'state'],
+    ['🦞', 'Average home in Massachusetts', 620000, 'state'], ['🌲', 'Average home in Washington state', 590000, 'state wa'],
+    ['🗽', 'Average home in New York state', 490000, 'state ny'], ['🏔️', 'Average home in Colorado', 540000, 'state'],
+    ['🎰', 'Average home in New Jersey', 540000, 'state nj'], ['🍊', 'Average home in Florida', 390000, 'state fl'],
+    ['🤠', 'Average home in Texas', 300000, 'state tx'], ['🌵', 'Average home in Arizona', 420000, 'state az'],
+    ['🎲', 'Average home in Nevada', 450000, 'state'], ['⛷️', 'Average home in Utah', 520000, 'state'],
+    ['🌲', 'Average home in Oregon', 500000, 'state'], ['🍑', 'Average home in Georgia', 330000, 'state'],
+    ['🏀', 'Average home in North Carolina', 330000, 'state nc'], ['🌭', 'Average home in Illinois', 270000, 'state'],
+    ['🌰', 'Average home in Ohio', 230000, 'state'], ['🚗', 'Average home in Michigan', 250000, 'state'],
+    ['🔔', 'Average home in Pennsylvania', 270000, 'state pa'], ['🎸', 'Average home in Tennessee', 320000, 'state'],
+    ['🏈', 'Average home in Alabama', 230000, 'state'], ['🎷', 'Average home in Mississippi', 180000, 'state'],
+    ['⛰️', 'Average home in West Virginia', 160000, 'state'], ['🐻', 'Average home in Alaska', 380000, 'state'],
+    ['🎺', 'Average home in Louisiana', 200000, 'state'], ['🐎', 'Average home in Kentucky', 210000, 'state'],
+    ['🌪️', 'Average home in Oklahoma', 210000, 'state'], ['🏁', 'Average home in Indiana', 240000, 'state'],
+    ['🏞️', 'Average home in Montana', 460000, 'state'], ['🥔', 'Average home in Idaho', 470000, 'state'],
+  ],
+  'Countries': [
+    ['🇺🇸', 'USA (whole economy, 1 year)', 30000000000000, 'america us gdp country'], ['🇨🇳', 'China (whole economy, 1 year)', 19000000000000, 'gdp country'],
+    ['🇩🇪', 'Germany (whole economy, 1 year)', 4700000000000, 'gdp country'], ['🇯🇵', 'Japan (whole economy, 1 year)', 4200000000000, 'gdp country'],
+    ['🇮🇳', 'India (whole economy, 1 year)', 4200000000000, 'gdp country'], ['🇬🇧', 'UK (whole economy, 1 year)', 3800000000000, 'britain england gdp country'],
+    ['🇫🇷', 'France (whole economy, 1 year)', 3200000000000, 'gdp country'], ['🇮🇹', 'Italy (whole economy, 1 year)', 2400000000000, 'gdp country'],
+    ['🇨🇦', 'Canada (whole economy, 1 year)', 2200000000000, 'gdp country'], ['🇧🇷', 'Brazil (whole economy, 1 year)', 2100000000000, 'gdp country'],
+    ['🇷🇺', 'Russia (whole economy, 1 year)', 2100000000000, 'gdp country'], ['🇰🇷', 'South Korea (whole economy, 1 year)', 1800000000000, 'korea gdp country'],
+    ['🇦🇺', 'Australia (whole economy, 1 year)', 1800000000000, 'gdp country'], ['🇪🇸', 'Spain (whole economy, 1 year)', 1800000000000, 'gdp country'],
+    ['🇲🇽', 'Mexico (whole economy, 1 year)', 1800000000000, 'gdp country'], ['🇹🇷', 'Turkey (whole economy, 1 year)', 1400000000000, 'turkiye gdp country'],
+    ['🇳🇱', 'Netherlands (whole economy, 1 year)', 1200000000000, 'holland gdp country'], ['🇸🇦', 'Saudi Arabia (whole economy, 1 year)', 1100000000000, 'gdp country'],
+    ['🇨🇭', 'Switzerland (whole economy, 1 year)', 950000000000, 'gdp country'], ['🇵🇱', 'Poland (whole economy, 1 year)', 900000000000, 'gdp country'],
+    ['🇦🇪', 'UAE (whole economy, 1 year)', 550000000000, 'emirates dubai gdp country'], ['🇮🇱', 'Israel (whole economy, 1 year)', 550000000000, 'gdp country'],
+    ['🇪🇬', 'Egypt (whole economy, 1 year)', 350000000000, 'gdp country'], ['🇰🇿', 'Kazakhstan (whole economy, 1 year)', 300000000000, 'gdp country'],
+    ['🇺🇦', 'Ukraine (whole economy, 1 year)', 200000000000, 'gdp country'], ['🇱🇺', 'Luxembourg (whole economy, 1 year)', 90000000000, 'gdp country'],
+    ['🇮🇸', 'Iceland (whole economy, 1 year)', 33000000000, 'gdp country'], ['🇲🇨', 'Monaco (whole economy, 1 year)', 9000000000, 'gdp country'],
+    ['🇲🇻', 'Maldives (whole economy, 1 year)', 7000000000, 'gdp country'], ['🇹🇻', 'Tuvalu (whole economy, 1 year)', 60000000, 'gdp country tiny'],
+  ],
+  'Space': [
+    ['🚀', 'A Falcon 9 launch', 70000000, 'spacex rocket'], ['🚀', 'A Falcon Heavy launch', 97000000, 'spacex rocket'],
+    ['🚀', 'A Starship flight (est.)', 100000000, 'spacex rocket'], ['🌕', 'A Saturn V rocket (today\'s money)', 1200000000, 'apollo moon rocket nasa'],
+    ['🚀', 'An SLS + Orion launch', 4000000000, 'nasa artemis rocket moon'], ['🛸', 'A Space Shuttle launch', 1500000000, 'nasa'],
+    ['🌕', 'The whole Apollo program (today\'s money)', 260000000000, 'moon nasa'], ['🔴', 'The Perseverance Mars rover', 2700000000, 'mars nasa robot'],
+    ['🧑‍🚀', 'A seat on a Soyuz to the ISS', 90000000, 'russia astronaut rocket'], ['🚀', 'A model rocket kit', 40, 'toy rocket'],
+    ['🛰️', 'A small satellite (CubeSat)', 150000, 'satellite'], ['🔭', 'The Hubble Space Telescope (today\'s money)', 16000000000, 'nasa'],
+  ],
+  'Military': [
+    ['✈️', 'An F-22 Raptor', 150000000, 'jet fighter plane'], ['🛩️', 'A B-2 Spirit stealth bomber', 2100000000, 'plane'],
+    ['🛩️', 'A B-21 Raider bomber', 700000000, 'plane stealth'], ['🪖', 'An M1 Abrams tank', 10000000, 'tank army'],
+    ['🪖', 'A Leopard 2 tank', 9000000, 'tank germany'], ['🚁', 'An Apache attack helicopter', 35000000, 'helicopter'],
+    ['🚁', 'A Black Hawk helicopter', 21000000, 'helicopter'], ['🎯', 'A Tomahawk missile', 2000000, 'missile rocket'],
+    ['🛡️', 'A Patriot interceptor missile', 4000000, 'missile defense'], ['🎯', 'A Javelin missile', 200000, 'missile'],
+    ['🚛', 'A HIMARS launcher', 5000000, 'rocket artillery'], ['🌊', 'A Virginia-class submarine', 3500000000, 'sub nuclear navy'],
+    ['🚢', 'An Arleigh Burke destroyer', 2200000000, 'ship navy'], ['🛸', 'An MQ-9 Reaper drone', 30000000, 'drone predator'],
+    ['🦺', 'A bulletproof vest', 1000, 'body armor kevlar'], ['⚔️', 'A full suit of knight armor (replica)', 3000, 'medieval knight sword'],
+    ['🗡️', 'A handmade katana', 5000, 'samurai sword japan'], ['⚔️', 'A Viking sword (replica)', 400, 'sword'],
+    ['🏹', 'A hunting bow', 600, 'archery'], ['🔫', 'A Nerf blaster', 30, 'toy'],
+    ['✨', 'A Star Wars lightsaber (Disney park)', 200, 'jedi saber'], ['🔨', "A Thor's hammer replica", 150, 'mjolnir marvel'],
+  ],
+  'Food & drinks': [
+    ['🍜', 'A bowl of pho', 15, 'vietnamese soup'], ['🍜', 'A bowl of ramen', 16, 'japanese noodles'], ['🍣', 'A sushi roll', 12, 'japanese'],
+    ['🍝', 'Pad thai', 15, 'thai noodles'], ['🥗', 'A poke bowl', 16, 'hawaiian'], ['🥯', 'A bagel', 3, 'breakfast'],
+    ['🥐', 'A croissant', 4, 'french pastry'], ['🍩', 'A donut', 2, 'doughnut'], ['🧁', 'A cupcake', 4, 'cake'],
+    ['🍰', 'A slice of cheesecake', 8, 'cake dessert'], ['🍦', 'An ice cream cone', 5, 'dessert'], ['🍨', "A pint of Ben & Jerry's", 6, 'ice cream'],
+    ['🔺', 'A bag of Doritos', 5, 'chips snack'], ['🍪', 'A pack of Oreos', 5, 'cookies'], ['🍫', 'A jar of Nutella', 6, 'chocolate spread'],
+    ['🥫', 'A can of Pringles', 3, 'chips'], ['🍫', 'A Snickers', 2, 'chocolate candy'], ['🍫', 'A Kit Kat', 2, 'chocolate candy'],
+    ['🍬', 'A bag of Skittles', 2, 'candy'], ['🍿', 'Popcorn at the movies', 9, 'cinema snack'], ['🧀', 'Nachos', 10, 'mexican'],
+    ['🍗', 'A dozen hot wings', 18, 'buffalo chicken'], ['🍔', 'A Chick-fil-A sandwich', 6, 'chicken sandwich'], ['🍔', 'A Five Guys burger', 12, 'burger'],
+    ['🍔', 'An In-N-Out Double-Double', 6, 'burger'], ['🍔', 'A Whopper', 7, 'burger king'], ['🌮', 'A Taco Bell Crunchwrap', 6, 'mexican'],
+    ['🥡', 'A Panda Express plate', 11, 'chinese orange chicken'], ['🍗', '10 Wingstop wings', 15, 'chicken'], ['🥗', 'A Sweetgreen salad', 16, 'salad'],
+    ['🫐', 'An açaí bowl', 14, 'acai'], ['🥤', 'A smoothie', 9, 'drink'], ['🥤', 'A Starbucks Frappuccino', 6.5, 'coffee drink'],
+    ['☕', "A Dunkin' coffee", 3, 'coffee'], ['🧃', 'A Gatorade', 2.5, 'sports drink'], ['💧', 'A bottle of water', 2, 'drink'],
+    ['🧃', 'A Prime Hydration', 3, 'drink logan paul ksi'], ['🍞', 'A loaf of bread', 3.5, 'grocery'], ['🍌', 'A banana', 0.3, 'fruit'],
+    ['🍎', 'An apple', 1, 'fruit'], ['🥑', 'An avocado', 2, 'fruit'], ['🍉', 'A watermelon', 6, 'fruit'],
+    ['🍍', 'A pineapple', 3, 'fruit'], ['🥩', 'A ribeye steak', 25, 'beef meat'], ['🦞', 'A lobster dinner', 60, 'seafood'],
+    ['🦀', 'A pound of king crab legs', 60, 'seafood'], ['🫙', 'An ounce of caviar', 100, 'fish eggs luxury'], ['🍄', 'An ounce of white truffle', 200, 'luxury'],
+    ['🌼', 'A gram of saffron', 10, 'spice'], ['🍔', 'The most expensive burger (Golden Boy)', 5000, 'gold burger'], ['🦃', 'Thanksgiving dinner for 10', 60, 'turkey'],
+    ['🦃', 'A whole turkey', 30, 'thanksgiving'], ['🎂', 'A birthday cake', 40, 'cake'], ['💒', 'A wedding cake', 500, 'cake'],
+    ['🍜', 'A Cup Noodles', 1, 'instant ramen'], ['🍜', 'A pack of instant ramen', 0.5, 'noodles'], ['🍱', 'A Lunchables', 3, 'kids lunch'],
+    ['🍗', '20 chicken nuggets', 7, 'mcdonalds'], ['🍟', 'Large fries', 4, 'mcdonalds'], ['🔥', 'A bag of Hot Cheetos', 5, 'flamin hot chips'],
+    ['🍬', 'Sour Patch Kids', 2.5, 'candy'], ['🍭', 'Cotton candy', 5, 'candy fair'], ['🥖', 'A churro', 5, 'dessert'],
+    ['🥨', 'A soft pretzel', 6, 'snack'], ['🥪', 'A Philly cheesesteak', 14, 'sandwich'], ['🥯', 'A NYC bagel with lox', 15, 'salmon'],
+    ['🍕', 'A Chicago deep-dish pizza', 30, 'pizza'], ['🍖', 'A pound of Texas brisket', 30, 'bbq barbecue'], ['🦞', 'A lobster roll', 35, 'seafood maine'],
+    ['🍲', 'A bowl of gumbo', 15, 'louisiana cajun'], ['🍟', 'Poutine', 12, 'canada fries'], ['🐟', 'Fish and chips', 18, 'british'],
+    ['🍬', 'A box of macarons', 20, 'french dessert'], ['🧇', 'A Belgian waffle', 10, 'breakfast'], ['🥘', 'Paella', 25, 'spanish rice'],
+    ['🥟', 'A dim sum meal', 30, 'chinese dumplings'], ['🥩', 'Korean BBQ dinner', 40, 'kbbq'], ['🦆', 'A Peking duck', 60, 'chinese'],
+    ['🍱', 'A bento box', 12, 'japanese lunch'], ['🍙', 'An onigiri', 2, 'rice ball japanese'], ['🍡', 'Mochi ice cream', 1.5, 'japanese dessert'],
+    ['🥬', 'A jar of kimchi', 8, 'korean'], ['🍈', 'Yubari King melons (record auction pair)', 45000, 'japan melon'], ['🥟', 'A plate of dumplings', 10, 'pelmeni'],
+  ],
+  'Stuff': [
+    ['🪥', 'A toothbrush', 3, 'thing'], ['☂️', 'An umbrella', 15, 'thing'], ['🎒', 'A backpack', 50, 'school bag'],
+    ['🌀', 'A fidget spinner', 8, 'toy'], ['🧊', "A Rubik's cube", 10, 'puzzle toy'], ['🧱', 'LEGO Millennium Falcon (UCS)', 850, 'lego star wars'],
+    ['🧱', 'LEGO Death Star (UCS)', 1000, 'lego star wars'], ['👱‍♀️', 'A Barbie doll', 15, 'toy'], ['🏎️', 'A Hot Wheels car', 1.5, 'toy'],
+    ['🧸', 'A teddy bear', 20, 'toy plush'], ['🎨', 'A tub of Play-Doh', 5, 'toy'], ['🚲', 'A bike', 300, 'bicycle'],
+    ['🤸', 'A trampoline', 400, 'backyard'], ['🛹', 'A hoverboard', 200, 'toy'], ['🎱', 'A pool table', 3000, 'billiards'],
+    ['🎸', 'A Fender Stratocaster', 900, 'guitar'], ['🥁', 'A drum kit', 700, 'drums music'], ['🛋️', 'A sofa', 800, 'couch furniture'],
+    ['🛏️', 'A bed', 1000, 'mattress furniture'], ['🧊', 'A fridge', 1500, 'refrigerator'], ['🧺', 'A washing machine', 800, 'laundry'],
+    ['📟', 'A microwave', 150, 'kitchen'], ['❄️', 'An air conditioner', 500, 'ac'], ['🚽', 'A toilet', 300, 'bathroom'],
+    ['🛁', 'A bathtub', 1000, 'bathroom'], ['🖨️', 'A printer', 150, 'office'], ['📱', 'A phone case', 20, 'cover'],
+    ['🔌', 'A phone charger', 20, 'cable'], ['🏷️', 'An AirTag', 29, 'apple tracker'], ['✏️', 'An Apple Pencil', 129, 'stylus'],
+    ['⌨️', 'A mechanical keyboard', 120, 'gaming'], ['📸', 'A Polaroid camera', 100, 'instant camera'], ['🎮', 'A Game Boy (used)', 70, 'nintendo retro'],
+    ['🥚', 'A Tamagotchi', 20, 'toy retro'], ['🦉', 'A Furby', 50, 'toy'], ['🕯️', 'A scented candle', 25, 'candle'],
+    ['🎄', 'A Christmas tree', 80, 'holiday'], ['🎁', 'A Nintendo gift card', 50, 'gift'], ['📚', 'A Harry Potter box set', 70, 'books'],
+  ],
+  'Legendary': [
+    ['🖼️', 'Salvator Mundi (priciest painting ever sold)', 450000000, 'da vinci painting art'], ['🖼️', 'The Mona Lisa (estimated)', 1000000000, 'da vinci painting art'],
+    ['💎', 'The Pink Star diamond', 71000000, 'diamond jewel'], ['💎', 'The Hope Diamond (est.)', 250000000, 'diamond jewel'],
+    ['🎻', 'A Stradivarius violin', 16000000, 'violin music'], ['🍄', 'A sealed Super Mario Bros. game', 2000000, 'nintendo record'],
+    ['⚾', 'A Honus Wagner baseball card', 7250000, 'card'], ['🏀', "Michael Jordan's 1998 Finals jersey", 10100000, 'jersey nba'],
+    ['⚾', "Babe Ruth's 'called shot' jersey", 24000000, 'jersey baseball'], ['🦕', "'Apex' the Stegosaurus skeleton", 45000000, 'dinosaur fossil'],
+    ['🦖', "'Stan' the T. rex skeleton", 32000000, 'dinosaur fossil'], ['🏆', 'An Olympic gold medal (just the metal)', 1000, 'medal'],
+  ],
+};
+const NEW_ITEMS = Object.entries(MORE).flatMap(([c, list]) => list.map(([e, n, p, a]) => ({ e, n, p, a, c })));
+const allItems = () => QUESTIONS.concat(EXTRA_ITEMS, NEW_ITEMS);
+const STOP = new Set(['a', 'an', 'the', 'of', 'at', 'in', 'for', 'to', 'how', 'much', 'is', 'cost', 'price']);
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/([a-z])(\d)/g, '$1 $2').replace(/(\d)([a-z])/g, '$1 $2')
+  .replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(t => t && !STOP.has(t));
+function lev(a, b) {
+  if (a === b) return 0;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+function tokSim(q, t) {
+  if (q === t) return 1;
+  if (q.length >= 2 && t.startsWith(q)) return 0.92;           // still typing
+  if (/^\d+$/.test(q) || /^\d+$/.test(t)) return 0;             // numbers must match exactly
+  if (q.length <= 2) return 0;                                  // short bits like "ps" must match exactly
+  const s = 1 - lev(q, t) / Math.max(q.length, t.length);
+  return s >= 0.5 ? s : 0;
+}
+let searchIndex = null;
+function searchItems(query, limit = 5, minScore = 0.6) {
+  const qt = norm(query);
+  if (!qt.length) return [];
+  if (!searchIndex) searchIndex = allItems().map(it => ({
+    it, name: norm(it.n), all: norm(it.n + ' ' + (ALIASES[it.n] || it.a || '')),
+  }));
+  return searchIndex.map(x => {
+    let sum = 0;
+    for (const q of qt) sum += Math.max(...x.all.map(t => tokSim(q, t)));
+    const covered = x.name.filter(t => qt.some(q => tokSim(q, t) >= 0.7)).length / x.name.length;
+    let score = (sum / qt.length) * 0.85 + covered * 0.15;
+    // a model number that doesn't match (iPhone 19 vs iPhone 17) means it's not the same thing
+    if (qt.some(q => /^\d+$/.test(q) && !x.all.includes(q))) score *= 0.6;
+    // "ps5" should show the normal PS5 before the Pro / Max / Plus versions
+    if (x.name.some(t => ['pro', 'max', 'plus', 'ultra', 'mini'].includes(t) && !qt.includes(t))) score -= 0.03;
+    return { it: x.it, score };
+  }).filter(r => r.score >= minScore).sort((a, b) => b.score - a.score).slice(0, limit);
+}
+// Product lines with numbered models, and the newest one in our list.
+// Update "latest" when a new model comes out (and add it to the list above).
+const LINES = [
+  { words: ['iphone'], latest: 17, name: 'iPhone 17' },
+  { words: ['galaxy', 'samsung'], letter: 's', latest: 25, name: 'Galaxy S25' },
+  { words: ['ps', 'playstation'], latest: 5, name: 'PS5' },
+  { words: ['switch'], latest: 2, name: 'Switch 2' },
+  { words: ['pixel'], latest: 10, name: 'Pixel 10' },
+];
+// "future" = doesn't exist yet, "new" = might have just come out (we don't have it yet)
+function modelCheck(query) {
+  const qt = norm(query);
+  for (const L of LINES) {
+    if (!qt.some(t => L.words.includes(t))) continue;
+    let nums = qt.filter(t => /^\d+$/.test(t)).map(Number);
+    if (L.letter) nums = qt.filter((t, i) => /^\d+$/.test(t) && qt[i - 1] === L.letter).map(Number);
+    nums = nums.filter(n => n < 100); // ignore years like 2007
+    if (!nums.length) continue;
+    const n = Math.max(...nums);
+    if (n > L.latest + 1) return { kind: 'future', latest: L.name };
+    if (n === L.latest + 1) return { kind: 'new', latest: L.name };
+  }
+  return null;
+}
+
+// For items we don't have: guess a price from the most similar items (median of up to 5)
+function estimatePrice(query) {
+  const qt = norm(query).filter(q => !/^\d+$/.test(q));
+  // only trust items that share a real word with the query (not just similar letters)
+  const near = searchItems(query, 12, 0.25).filter(r => {
+    const toks = norm(r.it.n + ' ' + (ALIASES[r.it.n] || r.it.a || ''));
+    return qt.some(q => toks.some(t => tokSim(q, t) >= 0.85));
+  }).slice(0, 5);
+  if (!near.length) return null;
+  const ps = near.map(r => r.it.p).sort((a, b) => a - b);
+  const mid = ps[Math.floor(ps.length / 2)];
+  const p = mid >= 100 ? Math.round(mid / 10) * 10 : Math.round(mid);
+  return { p, from: near.slice(0, 3).map(r => r.it.n) };
+}
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+let lastPicked = '';
+function showSuggestions() {
+  const v = $('amt').value, box = $('sugg');
+  if (v === lastPicked || !/[a-z]/i.test(v) || !isNaN(parseAmount(v))) { box.hidden = true; return; }
+  const res = modelCheck(v) ? [] : searchItems(v); // a model that isn't out yet never "matches" something else
+  box.innerHTML = '';
+  if (!res.length) {
+    // Not in our list: let people type the price themselves
+    const name = cap(v.trim()).slice(0, 50), mc = modelCheck(v);
+    if (mc && mc.kind === 'future') {
+      box.innerHTML = '<div class="snone"><span class="msg"></span></div>';
+      box.querySelector('.msg').textContent = `"${v.trim()}" isn't out yet 👀 The newest one we know is the ${mc.latest}. No price until it drops.`;
+      box.hidden = false;
+      return;
+    }
+    const est = mc ? null : estimatePrice(v); // brand-new model: don't guess, let people type it
+    box.innerHTML = '<div class="snone"><span class="msg"></span><div class="guess" hidden></div>' +
+      '<span class="msg2"></span>' +
+      '<div class="manual"><div class="money small"><span>$</span><input id="manP" inputmode="decimal" placeholder="its price"></div>' +
+      '<button type="button" class="btn primary" id="manGo">Go</button></div></div>';
+    box.querySelector('.msg').textContent = mc
+      ? `"${v.trim()}" might be brand new. It's not in our list yet (newest we have: ${mc.latest}).`
+      : `We haven't priced "${v.trim()}" exactly.`;
+    if (est) {
+      const gb = box.querySelector('.guess'); gb.hidden = false;
+      gb.innerHTML = '<button type="button" class="sitem top" id="useGuess"><span class="e">🧮</span><span class="nm"></span><span class="pr"></span></button><small></small>';
+      gb.querySelector('.nm').textContent = 'Our rough guess';
+      gb.querySelector('.pr').textContent = '~$' + money(est.p);
+      gb.querySelector('small').textContent = 'based on: ' + est.from.join(', ');
+      $('useGuess').onclick = () => pickItem({ n: name + ' (rough guess)', p: est.p });
+    }
+    box.querySelector('.msg2').textContent = est ? 'Or type the real price if you know it:' : 'Know what it costs? Type it:';
+    let warned = 0;
+    const doManual = () => {
+      const p = parseAmount($('manP').value);
+      if (!(p > 0) || p > 1e15) { toast('Type a price, like 499 or 50k'); return; }
+      // sanity check: way off from similar items? ask once more before using it
+      if (est && (p > est.p * 20 || p < est.p / 20) && warned !== p) {
+        warned = p;
+        toast(`Hmm, similar stuff costs ~$${money(est.p)}. Tap Go again to use $${money(p)} anyway.`);
+        return;
+      }
+      pickItem({ n: name + ' (your price)', p });
+    };
+    $('manGo').onclick = doManual;
+    $('manP').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doManual(); } });
+  } else res.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'sitem' + (i === 0 ? ' top' : '');
+    b.innerHTML = '<span class="e"></span><span class="nm"></span><span class="pr"></span>';
+    b.children[0].textContent = r.it.e;
+    b.children[1].textContent = r.it.n;
+    b.children[2].textContent = '$' + money(r.it.p);
+    b.onclick = () => pickItem(r.it);
+    box.appendChild(b);
+  });
+  box.hidden = false;
+}
+function pickItem(it) {
+  $('sugg').hidden = true;
+  $('amt').value = lastPicked = it.n;
+  if (document.activeElement) document.activeElement.blur();
+  go(it.p, it.n, 'shawarma');
+}
+$('amt').addEventListener('input', showSuggestions);
+$('amt').addEventListener('focus', showSuggestions);
+// hide the list when you tap somewhere else (but keep it if you moved into the "type its price" box)
+$('amt').addEventListener('blur', () => setTimeout(() => {
+  if (!$('sugg').contains(document.activeElement)) $('sugg').hidden = true;
+}, 200));
+
+/* ---------- render ---------- */
+let cuRaf = 0;
+function countUp(el, to) {
+  cancelAnimationFrame(cuRaf);
+  const t0 = performance.now(), D = reduced ? 0 : 1100;
+  const step = t => {
+    const k = D ? Math.min(1, (t - t0) / D) : 1;
+    el.textContent = fmt(to * (1 - Math.pow(1 - k, 3)));
+    if (k < 1) cuRaf = requestAnimationFrame(step); else el.textContent = fmt(to);
+  };
+  cuRaf = requestAnimationFrame(step);
+}
+
+function render(withRain) {
+  const u = unitOf(state.unit), n = state.amount / u.p;
+  $('res').hidden = false;
+  $('what').textContent = whatText();
+  const big = $('bigN');
+  big.style.setProperty('--len', Math.max(3, fmt(n).length));
+  big.classList.remove('pop'); void big.offsetWidth; big.classList.add('pop');
+  countUp(big, n);
+  $('bigU').innerHTML = '';
+  $('bigU').append(nameFor(u, n));
+  const em = document.createElement('span'); em.className = 'e'; em.textContent = u.e; $('bigU').append(em);
+  $('quip').textContent = u.q(n);
+
+  const grid = $('grid'); grid.innerHTML = '';
+  UNITS.filter(x => x.id !== u.id).forEach(x => {
+    const m = state.amount / x.p;
+    const c = document.createElement('button');
+    c.type = 'button'; c.className = 'card';
+    c.innerHTML = `<span class="e"></span><span class="n"></span><span class="u"></span>`;
+    c.children[0].textContent = x.e;
+    c.children[1].textContent = fmtShort(m);
+    c.children[2].textContent = nameFor(x, m);
+    c.onclick = () => { state.unit = x.id; render(true); $('res').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); };
+    grid.appendChild(c);
+  });
+
+  const qs = new URLSearchParams({ a: state.amount });
+  if (state.label) qs.set('w', state.label);
+  if (state.unit !== 'shawarma') qs.set('u', state.unit);
+  try { history.replaceState(null, '', '?' + qs.toString()); } catch (e) {}
+  if (withRain) rain(u.e, n);
+}
+
+function go(amount, label, unit) {
+  state.amount = amount; state.label = label || ''; state.unit = unit || state.unit;
+  render(true);
+  setTimeout(() => $('res').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }), 60);
+}
+
+$('f').addEventListener('submit', e => {
+  e.preventDefault();
+  const a = parseAmount($('amt').value);
+  if (isNaN(a) && /[a-z]/i.test($('amt').value)) {
+    const best = modelCheck($('amt').value) ? null : searchItems($('amt').value)[0];
+    if (best) { pickItem(best.it); toast('Found: ' + best.it.n); return; }
+    lastPicked = ''; showSuggestions();
+    setTimeout(() => { if ($('manP')) $('manP').focus(); }, 30);
+    return;
+  }
+  $('sugg').hidden = true;
+  if (!(a > 0) || a > 1e15) {
+    const box = $('moneyBox');
+    box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    toast('Type a price, like 499 or 50k');
+    return;
+  }
+  go(a, '', 'shawarma');
+});
+
+$('rand').onclick = () => {
+  const pr = PRESETS[Math.floor(Math.random() * PRESETS.length)];
+  const u = UNITS[Math.floor(Math.random() * UNITS.length)];
+  $('amt').value = pr.p;
+  go(pr.p, pr.w, u.id);
+};
+
+/* ---------- emoji rain ---------- */
+/* Emoji are drawn once into a small image (sprite) and then just copied each frame,
+   which is much cheaper than rendering emoji text 60 times a second. */
+const cv = $('rain'), cx = cv.getContext('2d');
+let parts = [], raf = 0, dpr = 1, vw = 0, vh = 0;
+const sprites = {};
+function sprite(emoji) {
+  if (sprites[emoji]) return sprites[emoji];
+  const S = 64, c = document.createElement('canvas');
+  c.width = c.height = S;
+  const g = c.getContext('2d');
+  g.font = `${S * 0.82}px serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(emoji, S / 2, S / 2 + 3);
+  return (sprites[emoji] = c);
+}
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  if (w === vw && Math.abs(h - vh) < 120) return; // ignore phone address-bar jiggle
+  vw = w; vh = h; dpr = Math.min(1.5, devicePixelRatio || 1);
+  cv.width = w * dpr; cv.height = h * dpr;
+}
+addEventListener('resize', resize); resize();
+function rain(emoji, n) {
+  if (reduced) return;
+  const small = innerWidth < 600;
+  const max = small ? 40 : 70;
+  const count = Math.min(max, Math.max(8, Math.round(Math.log10(n + 1) * (small ? 9 : 14))));
+  parts = parts.slice(-max); // never pile up too many
+  const img = sprite(emoji);
+  for (let i = 0; i < count; i++) parts.push({
+    x: Math.random() * vw, y: -40 - Math.random() * vh * 0.8,
+    vy: 1.5 + Math.random() * 3, vx: (Math.random() - 0.5) * 1.4,
+    r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.15,
+    s: 26 + Math.random() * 30, img,
+  });
+  if (!raf) raf = requestAnimationFrame(loop);
+}
+function loop() {
+  cx.setTransform(1, 0, 0, 1, 0, 0);
+  cx.clearRect(0, 0, cv.width, cv.height);
+  parts = parts.filter(p => p.y < vh + 60);
+  for (const p of parts) {
+    p.vy += 0.06; p.y += p.vy; p.x += p.vx; p.r += p.vr;
+    const c = Math.cos(p.r) * dpr, s = Math.sin(p.r) * dpr;
+    cx.setTransform(c, s, -s, c, p.x * dpr, p.y * dpr);
+    cx.drawImage(p.img, -p.s / 2, -p.s / 2, p.s, p.s);
+  }
+  raf = parts.length ? requestAnimationFrame(loop) : 0;
+  if (!raf) { cx.setTransform(1, 0, 0, 1, 0, 0); cx.clearRect(0, 0, cv.width, cv.height); }
+}
+
+/* ---------- toast ---------- */
+let tt = 0;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- share card (1080x1920, for stories / TikTok) ---------- */
+const FONT = '"Space Grotesk", system-ui, sans-serif';
+const MONO = '"JetBrains Mono", Consolas, monospace';
+// dark background + neon grid, shared by both share cards
+function cardBg(g, W, H) {
+  const bg = g.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#120a3a'); bg.addColorStop(0.55, '#05060f'); bg.addColorStop(1, '#2a0838');
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  g.strokeStyle = 'rgba(34,230,255,.08)'; g.lineWidth = 2;
+  for (let x = 0; x <= W; x += 60) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+  for (let y = 0; y <= H; y += 60) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+  g.strokeStyle = '#22e6ff'; g.lineWidth = 6;
+  g.beginPath(); g.moveTo(50, 130); g.lineTo(50, 50); g.lineTo(130, 50); g.stroke();
+  g.strokeStyle = '#ff3df2';
+  g.beginPath(); g.moveTo(W - 50, H - 130); g.lineTo(W - 50, H - 50); g.lineTo(W - 130, H - 50); g.stroke();
+}
+function neonGrad(g, W) {
+  const tg = g.createLinearGradient(100, 0, W - 100, 0);
+  tg.addColorStop(0, '#22e6ff'); tg.addColorStop(0.55, '#7a5cff'); tg.addColorStop(1, '#ff3df2');
+  return tg;
+}
+function wrapText(g, text, x, y, maxW, lh) {
+  const words = text.split(' '); let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (g.measureText(test).width > maxW && line) { g.fillText(line, x, y); line = w; y += lh; }
+    else line = test;
+  }
+  g.fillText(line, x, y);
+  return y;
+}
+function rrect(g, x, y, w, h, r) {
+  g.beginPath();
+  if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h);
+}
+async function makeCard() {
+  try { await document.fonts.ready; } catch (e) {}
+  const u = unitOf(state.unit), n = state.amount / u.p;
+  const W = 1080, H = 1920, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  cardBg(g, W, H);
+
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  let seed = 11; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  g.globalAlpha = 0.1; g.font = '90px serif';
+  for (let i = 0; i < 42; i++) { g.save(); g.translate(rnd() * W, rnd() * H); g.rotate(rnd() * 6.28); g.fillText(u.e, 0, 0); g.restore(); }
+  g.globalAlpha = 1;
+
+  g.fillStyle = '#8ea3c7'; g.font = `600 54px ${FONT}`;
+  wrapText(g, whatText(), W / 2, 290, 920, 66);
+
+  g.font = '170px serif'; g.fillText(u.e, W / 2, 520);
+
+  const s = fmt(n); let fs = 280;
+  g.font = `800 ${fs}px ${FONT}`;
+  while (g.measureText(s).width > 960 && fs > 60) { fs -= 10; g.font = `800 ${fs}px ${FONT}`; }
+  const tg = neonGrad(g, W);
+  g.fillStyle = tg; g.fillText(s, W / 2, 770);
+
+  g.fillStyle = '#eaf6ff'; g.font = `800 82px ${FONT}`;
+  g.fillText(nameFor(u, n), W / 2, 930);
+
+  g.fillStyle = '#bdf3ff'; g.font = `500 46px ${FONT}`;
+  wrapText(g, u.q(n), W / 2, 1050, 880, 60);
+
+  const extra = ['wage', 'uber', 'coffee', 'taco'].filter(id => id !== u.id).slice(0, 3).map(unitOf);
+  extra.forEach((x, i) => {
+    const y = 1260 + i * 150, m = state.amount / x.p;
+    g.fillStyle = 'rgba(255,255,255,.08)'; rrect(g, 90, y, 900, 120, 32); g.fill();
+    g.textAlign = 'center'; g.font = '64px serif'; g.fillStyle = '#fff'; g.fillText(x.e, 170, y + 62);
+    g.textAlign = 'left'; g.fillStyle = '#eaf6ff'; g.font = `700 46px ${FONT}`;
+    let txt = `${fmt(m)} ${nameFor(x, m)}`;
+    while (g.measureText(txt).width > 720 && txt.length > 4) txt = txt.slice(0, -2) + '…';
+    g.fillText(txt, 240, y + 62);
+  });
+
+  g.textAlign = 'center';
+  g.fillStyle = '#22e6ff'; g.font = `800 50px ${FONT}`;
+  g.fillText('How much is YOUR stuff? 🌯', W / 2, 1770);
+  g.fillStyle = '#8ea3c7'; g.font = `600 38px ${FONT}`;
+  g.fillText(location.host || 'howmanyshawarmas.netlify.app', W / 2, 1840);
+  return c;
+}
+function shareText() {
+  const u = unitOf(state.unit), n = state.amount / u.p;
+  return `${whatText()} ${fmt(n)} ${nameFor(u, n)} ${u.e}`;
+}
+async function shareCanvas(c, text, name) {
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const file = new File([blob], name, { type: 'image/png' });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], text });
+      return;
+    }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast('Card saved! Post it to your story 📸');
+}
+async function copyText(text, msg) {
+  try { await navigator.clipboard.writeText(text); toast(msg); }
+  catch (e) { prompt('Copy this:', text); }
+}
+$('share').onclick = async () => shareCanvas(await makeCard(), shareText(), 'how-many-shawarmas.png');
+$('copy').onclick = () => copyText(shareText() + ' ' + location.href, 'Link copied! Send it to a friend 🔗');
+
+/* ---------- GAME: guess 5 prices in shawarmas ---------- */
+// Rough US prices (fall 2026), rounded so answers feel fair. Update them here any time.
+const QUESTIONS = [
+  // phones & tech
+  { e: '📱', n: 'iPhone 17 Pro (new)', p: 1099 },
+  { e: '📱', n: 'iPhone 17 Pro Max (new)', p: 1199 },
+  { e: '📱', n: 'iPhone 17 (new)', p: 799 },
+  { e: '📱', n: 'iPhone 14 (used)', p: 300 },
+  { e: '📱', n: 'iPhone 13 (used)', p: 250 },
+  { e: '🎧', n: 'AirPods Pro 3', p: 249 },
+  { e: '🎧', n: 'AirPods 4', p: 129 },
+  { e: '⌚', n: 'Apple Watch Ultra 3', p: 799 },
+  { e: '💻', n: 'MacBook Air M4 (13")', p: 999 },
+  { e: '📲', n: 'iPad (11th gen)', p: 349 },
+  { e: '🥽', n: 'Apple Vision Pro', p: 3499 },
+  { e: '🥽', n: 'Meta Quest 3', p: 499 },
+  { e: '🖥️', n: 'A high-end gaming PC', p: 2500 },
+  // gaming
+  { e: '🎮', n: 'PS5 (disc edition)', p: 550 },
+  { e: '🎮', n: 'PS5 Pro', p: 750 },
+  { e: '🕹️', n: 'Nintendo Switch 2', p: 449 },
+  { e: '🎮', n: 'Xbox Series X', p: 650 },
+  { e: '🕹️', n: 'Steam Deck OLED (512GB)', p: 549 },
+  { e: '💎', n: '10,000 Robux', p: 100 },
+  { e: '🪙', n: '1,000 Fortnite V-Bucks', p: 9 },
+  { e: '⛏️', n: 'Minecraft (Java + Bedrock)', p: 30 },
+  { e: '💿', n: 'A brand-new console game', p: 70 },
+  // fashion & stuff
+  { e: '👟', n: 'Air Jordan 1 High', p: 180 },
+  { e: '⌚', n: 'Rolex Submariner (new)', p: 10500 },
+  { e: '👜', n: 'Louis Vuitton Neverfull bag', p: 2200 },
+  { e: '🧢', n: 'A New Era fitted cap', p: 45 },
+  { e: '🥤', n: 'Stanley Quencher 40oz', p: 45 },
+  { e: '💇', n: 'Dyson Airwrap', p: 600 },
+  { e: '🛹', n: 'A complete skateboard', p: 100 },
+  { e: '🛴', n: 'An electric scooter', p: 600 },
+  // food & fun
+  { e: '🍔', n: 'A Big Mac', p: 6 },
+  { e: '☕', n: 'A Starbucks latte (grande)', p: 6 },
+  { e: '🎬', n: 'A movie ticket', p: 13 },
+  { e: '🎢', n: 'A Disney World 1-day ticket', p: 160 },
+  { e: '🌭', n: 'A hot dog at a baseball game', p: 8 },
+  { e: '🥚', n: 'A dozen eggs', p: 4 },
+  { e: '⛽', n: 'A full tank of gas', p: 50 },
+  { e: '📺', n: '1 year of Netflix (Standard)', p: 215 },
+  { e: '🎵', n: '1 year of Spotify Premium', p: 145 },
+  { e: '🏈', n: 'A Super Bowl ticket', p: 7000 },
+  // life
+  { e: '🐶', n: 'A golden retriever puppy', p: 2000 },
+  { e: '🐹', n: 'A hamster', p: 20 },
+  { e: '🐴', n: 'A horse', p: 5000 },
+  { e: '💍', n: 'An average engagement ring', p: 5500 },
+  { e: '👰', n: 'An average US wedding', p: 33000 },
+  { e: '🎓', n: 'A 4-year college degree', p: 120000 },
+  { e: '🏛️', n: '1 year at Harvard (all-in)', p: 87000 },
+  { e: '🏠', n: 'An average US house', p: 420000 },
+  { e: '🏊', n: 'A backyard swimming pool', p: 60000 },
+  { e: '🎹', n: 'A Steinway grand piano', p: 180000 },
+  // cars & crazy rich
+  { e: '🚗', n: 'Tesla Model 3', p: 42000 },
+  { e: '🚙', n: 'An average new car', p: 48000 },
+  { e: '🏎️', n: 'Lamborghini Urus', p: 240000 },
+  { e: '🏎️', n: 'Ferrari SF90', p: 525000 },
+  { e: '🏎️', n: 'Bugatti Chiron', p: 3000000 },
+  { e: '🚁', n: 'A helicopter', p: 3000000 },
+  { e: '🚀', n: 'A ticket to space', p: 600000 },
+  { e: '✈️', n: 'A private jet', p: 70000000 },
+  { e: '🛫', n: 'A Boeing 747', p: 400000000 },
+  { e: '🛥️', n: 'A superyacht', p: 500000000 },
+  { e: '🏀', n: 'An NBA team', p: 5000000000 },
+];
+const ROUNDS = 5, SH = 10;
+const LAUNCH = Date.UTC(2026, 9, 24); // Daily #1 = Oct 24, 2026
+const game = { qs: [], i: 0, score: 0, log: [], answered: false, mode: 'practice', day: 1 };
+
+function shuffle(a, rnd = Math.random) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function seeded(seed) {
+  return () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function todayNum() {
+  const d = new Date();
+  return Math.max(1, Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - LAUNCH) / 864e5) + 1);
+}
+// Everyone gets the same 5 items on the same day. No repeats until the whole list is used up.
+function dailyQs(day) {
+  const per = Math.floor(QUESTIONS.length / ROUNDS);
+  const cycle = Math.floor((day - 1) / per), k = (day - 1) % per;
+  return shuffle(QUESTIONS, seeded(cycle * 7919 + 13)).slice(k * ROUNDS, k * ROUNDS + ROUNDS);
+}
+function load(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+const squares = () => game.log.map(l => (l.pts >= 80 ? '🟩' : l.pts >= 50 ? '🟨' : l.pts > 0 ? '🟧' : '🟥')).join('');
+// 100 if within 5%, then drops off; 5x too high or too low = 0.
+function points(guess, real) {
+  const r = Math.max(guess / real, real / guess);
+  if (r <= 1.05) return 100;
+  return Math.max(0, Math.round(100 * (1 - Math.log(r) / Math.log(5))));
+}
+function verdict(p) {
+  if (p === 100) return '🎯 PERFECT!';
+  if (p >= 80) return '🔥 So close!';
+  if (p >= 50) return '👍 Not bad';
+  if (p > 0) return '😬 Kinda off';
+  return '💀 Way off';
+}
+function rank(s) {
+  if (s >= 450) return ['Shawarma Oracle 🔮', 'You know the price of everything. Suspicious.'];
+  if (s >= 350) return ['Shawarma Master 🌯', 'Your wallet and your stomach are in sync.'];
+  if (s >= 250) return ['Wrap Apprentice 🥙', 'Solid. A few more shawarmas and you\'re there.'];
+  if (s >= 100) return ['Tourist With a Coupon 🎟️', 'You have heard of money. Once.'];
+  return ['Has Never Seen Money 💀', 'Do you just... not buy things?'];
+}
+function getBest() { try { return +localStorage.getItem('hms_best') || 0; } catch (e) { return 0; } }
+function setBest(v) { try { localStorage.setItem('hms_best', v); } catch (e) {} }
+
+function show(id) { ['gQ', 'gA', 'gEnd'].forEach(x => $(x).hidden = x !== id); }
+function openGame(mode) {
+  game.mode = mode === 'daily' ? 'daily' : 'practice';
+  game.day = todayNum();
+  clearInterval(cdTimer);
+  $('game').hidden = false; document.body.style.overflow = 'hidden';
+  $('game').scrollTop = 0;
+  game.i = 0; game.score = 0; game.log = [];
+  if (game.mode === 'daily') {
+    game.qs = dailyQs(game.day);
+    const saved = load('hms_daily_' + game.day);
+    if (saved && saved.log) { // already played today: show the result again
+      game.score = saved.score;
+      game.log = saved.log.map((l, i) => ({ q: game.qs[i], g: l.g, real: game.qs[i].p / SH, pts: l.pts }));
+      endGame(true);
+      return;
+    }
+  } else {
+    game.qs = shuffle(QUESTIONS).slice(0, ROUNDS);
+  }
+  askQ();
+}
+function closeGame() {
+  $('game').hidden = true; document.body.style.overflow = '';
+  clearInterval(cdTimer);
+  updateHome();
+}
+
+/* countdown to the next daily (local midnight) */
+let cdTimer = 0;
+function startCountdown() {
+  clearInterval(cdTimer);
+  const tick = () => {
+    const now = new Date(), next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const s = Math.max(0, Math.floor((next - now) / 1000));
+    const pad = x => String(x).padStart(2, '0');
+    $('gNextDaily').textContent = `⏰ New items in ${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+  };
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+function streakCount() {
+  const st = load('hms_streak');
+  return st && st.last >= todayNum() - 1 ? st.count : 0;
+}
+function updateHome() {
+  const day = todayNum(), done = load('hms_daily_' + day), st = streakCount();
+  $('dailyLbl').textContent = done ? `Daily #${day} done: ${done.score}/500 ✅` : `Daily #${day}: today's 5 items`;
+  $('streakLine').textContent = (st ? `🔥 ${st}-day streak. ` : '') + 'Same 5 items for everyone, new ones every day at midnight.';
+}
+function askQ() {
+  const q = game.qs[game.i];
+  game.answered = false;
+  show('gQ');
+  $('gStep').textContent = (game.mode === 'daily' ? `Daily #${game.day} · ` : 'Practice · ') + `${game.i + 1}/${ROUNDS}`;
+  $('gScore').textContent = `${game.score} pts`;
+  $('gBar').style.width = (game.i / ROUNDS * 100) + '%';
+  $('gEmoji').textContent = q.e;
+  const ge = $('gEmoji'); ge.classList.remove('pop'); void ge.offsetWidth; ge.classList.add('pop');
+  $('gName').textContent = q.n;
+  $('gIn').value = '';
+  setTimeout(() => $('gIn').focus(), 50);
+}
+$('gForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (game.answered) return;
+  const g = parseAmount($('gIn').value);
+  if (!(g > 0) || g > 1e15) {
+    const b = $('gBox'); b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+    toast('Type a number of shawarmas, like 50 or 2k');
+    return;
+  }
+  game.answered = true;
+  const q = game.qs[game.i], real = q.p / SH, pts = points(g, real);
+  game.score += pts;
+  game.log.push({ q, g, real, pts });
+  show('gA');
+  $('gPts').textContent = '+' + pts;
+  const gp = $('gPts'); gp.classList.remove('pop'); void gp.offsetWidth; gp.classList.add('pop');
+  $('gVerdict').textContent = verdict(pts);
+  $('gYou').textContent = fmt(g) + ' 🌯';
+  $('gReal').textContent = fmt(real) + ' 🌯';
+  $('gPrice').textContent = `${q.n} costs about $${money(q.p)}. ${g > real * 1.05 ? 'You guessed too high.' : g < real / 1.05 ? 'You guessed too low.' : 'Nailed it.'}`;
+  $('gScore').textContent = `${game.score} pts`;
+  $('gBar').style.width = ((game.i + 1) / ROUNDS * 100) + '%';
+  $('gNext').textContent = game.i + 1 < ROUNDS ? 'Next →' : 'See my score 🏆';
+  rain(pts >= 50 ? '🌯' : '💀', pts >= 50 ? real : 30);
+  setTimeout(() => $('gNext').focus(), 50);
+});
+$('gNext').onclick = () => {
+  game.i++;
+  if (game.i < ROUNDS) askQ(); else endGame();
+};
+function endGame(replay) {
+  show('gEnd');
+  const s = game.score, [r, rq] = rank(s), daily = game.mode === 'daily';
+  $('gStep').textContent = daily ? `Daily #${game.day}` : 'Practice';
+  $('gScore').textContent = `${s} pts`;
+  $('gBar').style.width = '100%';
+  const isNew = !replay && s > getBest(), best = Math.max(getBest(), s); setBest(best);
+  if (daily && !replay) {
+    save('hms_daily_' + game.day, { score: s, log: game.log.map(l => ({ g: l.g, pts: l.pts })) });
+    const st = load('hms_streak') || { last: 0, count: 0 };
+    if (st.last !== game.day) {
+      st.count = st.last === game.day - 1 ? st.count + 1 : 1;
+      st.last = game.day;
+      save('hms_streak', st);
+    }
+  }
+  $('gRank').textContent = r;
+  $('gRankQ').textContent = rq;
+  $('gGrid').textContent = squares();
+  const bestTxt = isNew && s > 0 ? '🏆 New personal best!' : `Your best: ${best}/500`;
+  if (daily) {
+    const st = streakCount();
+    $('gBest').textContent = (st ? `🔥 ${st}-day streak · ` : '') + bestTxt;
+    startCountdown();
+    $('gAgain').textContent = '🎲 Practice mode';
+    $('gCopy').textContent = '📋 Copy result';
+  } else {
+    $('gBest').textContent = bestTxt;
+    $('gNextDaily').textContent = '';
+    $('gAgain').textContent = '🔁 Play again';
+    $('gCopy').textContent = '🔗 Challenge a friend';
+  }
+  // count up the final score
+  const el = $('gFinal'), t0 = performance.now(), D = reduced || replay ? 0 : 1200;
+  const step = t => {
+    const k = D ? Math.min(1, (t - t0) / D) : 1;
+    el.textContent = Math.round(s * (1 - Math.pow(1 - k, 3))) + '/500';
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  const rc = $('gRecap'); rc.innerHTML = '';
+  game.log.forEach(l => {
+    const row = document.createElement('div'); row.className = 'rrow';
+    row.innerHTML = '<span class="e"></span><span class="t"><span class="nm"></span><small></small></span><span class="p"></span>';
+    row.querySelector('.e').textContent = l.q.e;
+    row.querySelector('.nm').textContent = l.q.n;
+    row.querySelector('small').textContent = `You: ${fmt(l.g)} · Real: ${fmt(l.real)} 🌯`;
+    row.querySelector('.p').textContent = '+' + l.pts;
+    rc.appendChild(row);
+  });
+  if (s >= 250 && !replay) rain('🌯', 1e6);
+}
+function gameLink() { return location.href.split('?')[0].split('#')[0] + (game.mode === 'daily' ? '?daily=1' : '?play=1'); }
+function scoreText() {
+  if (game.mode === 'daily') return `How Many Shawarmas? Daily #${game.day} 🌯\n${game.score}/500 ${squares()}\n${rank(game.score)[0]}`;
+  return `I scored ${game.score}/500 on How Many Shawarmas? 🌯 (${rank(game.score)[0]}) Can you beat me?`;
+}
+$('daily').onclick = () => openGame('daily');
+$('play').onclick = () => openGame('practice');
+$('gAgain').onclick = () => openGame('practice');
+$('gClose').onclick = closeGame;
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('game').hidden) closeGame(); });
+$('gCopy').onclick = () => copyText(scoreText() + (game.mode === 'daily' ? '\n' : ' ') + gameLink(), 'Copied! Send it to a friend 🔗');
+$('gShare').onclick = async () => shareCanvas(await makeScoreCard(), scoreText(), 'my-shawarma-score.png');
+
+async function makeScoreCard() {
+  try { await document.fonts.ready; } catch (e) {}
+  const W = 1080, H = 1920, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  cardBg(g, W, H);
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  let seed = 5; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  g.globalAlpha = 0.1; g.font = '90px serif';
+  for (let i = 0; i < 42; i++) { g.save(); g.translate(rnd() * W, rnd() * H); g.rotate(rnd() * 6.28); g.fillText('🌯', 0, 0); g.restore(); }
+  g.globalAlpha = 1;
+
+  g.fillStyle = '#8ea3c7'; g.font = `600 56px ${FONT}`;
+  g.fillText(game.mode === 'daily' ? `How Many Shawarmas? · Daily #${game.day}` : 'I played How Many Shawarmas?', W / 2, 220);
+  g.font = '150px serif'; g.fillText('🏆', W / 2, 400);
+  const tg = neonGrad(g, W);
+  g.fillStyle = tg; g.font = `800 250px ${FONT}`;
+  g.fillText(`${game.score}`, W / 2, 630);
+  g.fillStyle = '#eaf6ff'; g.font = `800 70px ${FONT}`;
+  g.fillText('out of 500', W / 2, 780);
+  g.fillStyle = '#bdf3ff'; g.font = `800 64px ${FONT}`;
+  g.fillText(rank(game.score)[0], W / 2, 890);
+  g.font = '64px serif'; g.fillText(squares(), W / 2, 985);
+
+  game.log.forEach((l, i) => {
+    const y = 1060 + i * 125;
+    g.fillStyle = 'rgba(255,255,255,.08)'; rrect(g, 90, y, 900, 106, 30); g.fill();
+    g.textAlign = 'center'; g.font = '58px serif'; g.fillStyle = '#fff'; g.fillText(l.q.e, 160, y + 55);
+    g.textAlign = 'left'; g.fillStyle = '#eaf6ff'; g.font = `700 42px ${FONT}`;
+    let t = l.q.n;
+    while (g.measureText(t).width > 600 && t.length > 4) t = t.slice(0, -2) + '…';
+    g.fillText(t, 225, y + 55);
+    g.textAlign = 'right'; g.fillStyle = l.pts >= 50 ? '#22e6ff' : '#ff3df2'; g.font = `800 46px ${FONT}`;
+    g.fillText('+' + l.pts, 950, y + 55);
+  });
+
+  g.textAlign = 'center';
+  g.fillStyle = '#22e6ff'; g.font = `800 56px ${FONT}`;
+  g.fillText('Can you beat me? 🌯', W / 2, 1745);
+  g.fillStyle = '#8ea3c7'; g.font = `600 38px ${FONT}`;
+  g.fillText(location.host || 'howmanyshawarmas.netlify.app', W / 2, 1825);
+  return c;
+}
+
+/* ---------- the price list, by category ---------- */
+const CATS = [
+  ['Phones', '📱'], ['Tech', '💻'], ['Gaming', '🎮'], ['Sneakers', '👟'], ['Style', '🧢'],
+  ['Food & drinks', '🍔'], ['Fun & life', '🎢'], ['Pets', '🐶'], ['Stuff', '🧸'], ['Cars', '🚗'],
+  ['Big rides', '🚌'], ['Homes', '🏠'], ['Cities', '🏙️'], ['US states', '🗺️'], ['Countries', '🌍'],
+  ['Space', '🚀'], ['Military', '🪖'], ['Legendary', '💎'], ['Crazy rich', '🤑'],
+];
+// Older items don't have a category written down, so sort them by name / emoji.
+function catOf(it) {
+  if (it.c) return it.c;
+  const n = it.n.toLowerCase(), has = s => s.includes(it.e);
+  if (/charizard|sealed original|nike mag/.test(n)) return 'Legendary';
+  if (/iphone|galaxy s2|galaxy z|pixel/.test(n)) return 'Phones';
+  if (has('👟🩴🥾')) return 'Sneakers';
+  if (/rolex|patek|audemars|louis vuitton|gucci|supreme|north face|canada goose|ray-ban|levi|new era|stanley|dyson|crocs/.test(n)) return 'Style';
+  if (/ps5|playstation|xbox|nintendo|steam deck|robux|v-bucks|minecraft \(java|console game|mario kart|dualsense|rtx|gaming|game pass|meta quest/.test(n)) return 'Gaming';
+  if (/private jet|747|superyacht|nba team|helicopter|twitter|instagram|minecraft \(what|super bowl ad|burj|island|mansion|penthouse/.test(n)) return 'Crazy rich';
+  if (/house|of rent|nyc studio|swimming pool/.test(n)) return 'Homes';
+  if (has('📲💻🖥️🎧🔊⌚📷🛸📖📺🧹🔔☁️🥽') && !/netflix/.test(n)) return 'Tech';
+  if (has('🐶🐹🐴🐱🦜🐠')) return 'Pets';
+  if (has('🚗🚙🏎️🛻🐎🚘🏍️🚲⛳🌊')) return 'Cars';
+  if (has('🚀🔭🛰️')) return 'Space';
+  if (has('🛩️⚓')) return 'Military';
+  if (has('🍔☕🌭🥚🍟🌯🍕🥖🥫🥤🍣🍗🍩🌶️🥛🥩🍬')) return 'Food & drinks';
+  if (has('🛹🛴🧸')) return 'Stuff';
+  return 'Fun & life';
+}
+const cat = { asc: true, open: null };
+function itemRow(it) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'crow';
+  b.innerHTML = '<span class="e"></span><span class="nm"></span><span class="pr"><span class="d"></span><span class="sh"></span></span>';
+  b.querySelector('.e').textContent = it.e;
+  b.querySelector('.nm').textContent = it.n;
+  b.querySelector('.d').textContent = '$' + money(it.p);
+  b.querySelector('.sh').textContent = fmtShort(it.p / 10) + ' shawarmas';
+  b.onclick = () => { $('amt').value = lastPicked = it.n; go(it.p, it.n, 'shawarma'); };
+  return b;
+}
+function renderCatalog() {
+  const q = $('catQ').value.trim(), all = allItems();
+  $('catCount').textContent = `· ${all.length} items`;
+  const sortFn = (a, b) => cat.asc ? a.p - b.p : b.p - a.p;
+  const showList = !!q || !!cat.open;
+  $('cats').hidden = showList; $('catView').hidden = !showList;
+  if (!showList) {
+    const box = $('cats'); box.innerHTML = '';
+    CATS.forEach(([name, emoji]) => {
+      const items = all.filter(it => catOf(it) === name);
+      if (!items.length) return;
+      const ps = items.map(it => it.p);
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = 'ctile';
+      t.innerHTML = '<span class="e"></span><b></b><small></small>';
+      t.querySelector('.e').textContent = emoji;
+      t.querySelector('b').textContent = name;
+      t.querySelector('small').textContent = `${items.length} items · $${money(Math.min(...ps))} – $${money(Math.max(...ps))}`;
+      t.onclick = () => { cat.open = name; renderCatalog(); $('catalog').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); };
+      box.appendChild(t);
+    });
+    return;
+  }
+  const list = q ? searchItems(q, 40).map(r => r.it) : all.filter(it => catOf(it) === cat.open).sort(sortFn);
+  const em = (CATS.find(c => c[0] === cat.open) || [])[1] || '';
+  $('catName').textContent = q ? `Results for "${q}"` : `${em} ${cat.open}`;
+  const box = $('catList'); box.innerHTML = '';
+  if (!list.length) box.innerHTML = '<div class="catempty">Nothing like that yet. Type it in the box at the top and add its price yourself.</div>';
+  list.forEach(it => box.appendChild(itemRow(it)));
+}
+$('catBack').onclick = () => { cat.open = null; $('catQ').value = ''; renderCatalog(); $('catalog').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); };
+$('catQ').addEventListener('input', renderCatalog);
+$('catSort').onclick = () => { cat.asc = !cat.asc; $('catSort').textContent = cat.asc ? 'cheapest first' : 'priciest first'; renderCatalog(); };
+renderCatalog();
+
+/* ---------- breaking-news ticker ---------- */
+(() => {
+  const lines = [
+    i => `BREAKING: <b>${i.n}</b> now trading at ${fmtShort(i.p / 10)} shawarmas`,
+    i => `analysts confirm <b>${i.n}</b> = ${fmtShort(i.p / 10)} 🌯`,
+    i => `market update: <b>${i.n}</b> holding steady at ${fmtShort(i.p / 10)} shawarmas`,
+    () => `garlic sauce reserves at an all-time high`,
+    () => `1 shawarma still worth 1 shawarma, experts relieved`,
+  ];
+  const picks = shuffle(allItems()).slice(0, 10);
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const html = picks.map((it, k) => `<span>${lines[k % lines.length]({ n: esc(it.n), p: it.p })}</span>`).join('');
+  $('ticker').innerHTML = html + html; // twice, so the loop is seamless
+})();
+
+/* ---------- easter eggs ---------- */
+$('scribble').onclick = () => { $('amt').value = 'lambo'; lastPicked = ''; $('amt').focus(); showSuggestions(); };
+let logoClicks = 0;
+$('logoWrap').onclick = () => {
+  logoClicks++;
+  if (logoClicks === 7) { toast('ok you REALLY like shawarma'); rain('🌯', 1e12); logoClicks = 0; }
+};
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let kIdx = 0;
+addEventListener('keydown', e => {
+  kIdx = e.key === KONAMI[kIdx] ? kIdx + 1 : (e.key === KONAMI[0] ? 1 : 0);
+  if (kIdx === KONAMI.length) { kIdx = 0; toast('cheat code accepted: infinite shawarma'); rain('🌯', 1e12); setTimeout(() => rain('💸', 1e9), 400); }
+});
+
+/* ---------- open shared links ---------- */
+(() => {
+  const qs = new URLSearchParams(location.search);
+  updateHome();
+  if (qs.get('daily') === '1') { openGame('daily'); return; }
+  if (qs.get('play') === '1') { openGame('practice'); return; }
+  const a = parseAmount(qs.get('a') || '');
+  if (a > 0 && a <= 1e15) {
+    state.amount = a;
+    state.label = (qs.get('w') || '').slice(0, 60);
+    state.unit = unitOf(qs.get('u')).id;
+    $('amt').value = a;
+    render(true);
+  }
+})();
+</script>
+</body>
+</html>
